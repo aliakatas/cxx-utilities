@@ -13,7 +13,7 @@ void create_1d_waveform(dtype_t* d, int npoints, int npeaks, dtype_t amplitude) 
 {
     if (d == nullptr)
     {
-        std::string t = std::string(__FUCNTION__) + std::string(": output array is NULL");
+        std::string t = std::string(__FUNCTION__) + std::string(": output array is NULL");
         throw std::runtime_error(t.c_str());
     }
 

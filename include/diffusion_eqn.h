@@ -7,16 +7,24 @@
 
 // Function to solve the 1D diffusion equation using finite difference method
 // ∂u/∂t = α * ∂²u/∂x²
+// Assumes that r <= 0.5 => alpha * dt / (dx * dx) <= 0.5
 template <typename dtype_t>
 void solve_1d_diffusion_eqn(dtype_t alpha, dtype_t dx, dtype_t dt, int nx, int nt, dtype_t* u) noexcept(false)
 {
     // Stability condition
     dtype_t r = alpha * dt / (dx * dx);
 
+    if (r > 0.5)
+    {
+        std::string t = std::string(__FUNCTION__) + std::string(": stability criterion exceeded (") + 
+            std::to_string(r) + std::string("). Must be <= 0.5");
+        throw std::runtime_error(t.c_str());
+    }
+
     dtype_t* u_new = new dtype_t[nx];
     if (u_new == nullptr)
     {
-        std::string t = std::string(__FUCNTION__) + std::string(": failed to allocate memory for u_new");
+        std::string t = std::string(__FUNCTION__) + std::string(": failed to allocate memory for u_new");
         throw std::runtime_error(t.c_str());
     }
 
@@ -43,22 +51,22 @@ void solve_1d_diffusion_eqn(dtype_t alpha, dtype_t dx, dtype_t dt, int nx, int n
 template <typename dtype_t>
 dtype_t spatial_derivative_1d(const dtype_t* u, int idx, int idx_max, dtype_t dx) 
 {
-    if (i == 0) 
+    if (idx == 0) 
         return (u[1] - u[0]) / dx;
-    else if (i == idx_max)
-        return (u[i] - u[i - 1]) / dx;
+    else if (idx == idx_max)
+        return (u[idx] - u[idx - 1]) / dx;
     else
-        return (u[i + 1] - u[i - 1]) / (2.0 * dx);
+        return (u[idx + 1] - u[idx - 1]) / (2.0 * dx);
 }
 
 // Function to solve the 1D diffusion equation using Runge-Kutta 4th order method
 template <typename dtype_t>
-void solve1d_diffusion_eqn_rk4(dtype_t alpha, dtype_t dx, dtype_t dt, int nx, int nt, dtype_t* u) noexcept(false)
+void solve_1d_diffusion_eqn_rk4(dtype_t alpha, dtype_t dx, dtype_t dt, int nx, int nt, dtype_t* u) noexcept(false)
 {
     dtype_t* k1 = new dtype_t[4 * nx];
     if (k1 == nullptr)
     {
-        std::string t = std::string(__FUCNTION__) + std::string(": failed to allocate memory for k-factors");
+        std::string t = std::string(__FUNCTION__) + std::string(": failed to allocate memory for k-factors");
         throw std::runtime_error(t.c_str());
     }
     dtype_t* k2 = &k1[nx];
@@ -68,7 +76,7 @@ void solve1d_diffusion_eqn_rk4(dtype_t alpha, dtype_t dx, dtype_t dt, int nx, in
     dtype_t* u_temp = new dtype_t[nx];
     if (u_temp == nullptr)
     {
-        std::string t = std::string(__FUCNTION__) + std::string(": failed to allocate memory for temp array");
+        std::string t = std::string(__FUNCTION__) + std::string(": failed to allocate memory for temp array");
         throw std::runtime_error(t.c_str());
     }
 
@@ -80,7 +88,6 @@ void solve1d_diffusion_eqn_rk4(dtype_t alpha, dtype_t dx, dtype_t dt, int nx, in
         }
 
         // Compute k2
-        vector<double> u_temp(nx);
         for (int i = 0; i < nx; ++i) {
             u_temp[i] = u[i] + 0.5 * dt * k1[i];
         }
