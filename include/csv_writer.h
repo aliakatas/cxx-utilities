@@ -15,7 +15,7 @@ void write_to_csv(const std::map<std::string, std::vector<dtype_t>>& contents, c
     for (auto& c : contents)
         col_names.push_back(c.first);
     
-    size_t nrows = contents.at(col_names[0]).second.size();
+    size_t nrows = contents.at(col_names[0]).size();
 
     std::ofstream f(fname, std::ios::out);
     if (!f.is_open())
@@ -30,11 +30,11 @@ void write_to_csv(const std::map<std::string, std::vector<dtype_t>>& contents, c
         f << name << ",";
     f << "\n";
 
-    for (auto irow = 0; irow < nrows; ++irow)
+    for (size_t irow = 0; irow < nrows; ++irow)
     {
         f << irow << ",";
         for (auto& name : col_names)
-            f << contents.at(name).second.at(irow) << ",";
+            f << contents.at(name).at(irow) << ",";
         f << "\n";
     }
     f.close();
