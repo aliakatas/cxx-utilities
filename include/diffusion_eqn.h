@@ -81,40 +81,36 @@ void solve_1d_diffusion_eqn_rk4(dtype_t alpha, dtype_t dx, dtype_t dt, int nx, i
     }
 
     // Iterate over time steps
-    for (int n = 0; n < nt; ++n) {
+    for (int n = 0; n < nt; ++n) 
+    {
         // Compute k1
-        for (int i = 0; i < nx; ++i) {
-            k1[i] = alpha * spatialDerivative(u, i, dx);
-        }
+        for (int i = 0; i < nx; ++i)
+            k1[i] = alpha * spatial_derivative_1d(u, i, nx, dx);
 
         // Compute k2
-        for (int i = 0; i < nx; ++i) {
+        for (int i = 0; i < nx; ++i)
             u_temp[i] = u[i] + 0.5 * dt * k1[i];
-        }
-        for (int i = 0; i < nx; ++i) {
-            k2[i] = alpha * spatialDerivative(u_temp, i, dx);
-        }
+            
+        for (int i = 0; i < nx; ++i)
+            k2[i] = alpha * spatial_derivative_1d(u_temp, i, nx, dx);
 
         // Compute k3
-        for (int i = 0; i < nx; ++i) {
+        for (int i = 0; i < nx; ++i)
             u_temp[i] = u[i] + 0.5 * dt * k2[i];
-        }
-        for (int i = 0; i < nx; ++i) {
-            k3[i] = alpha * spatialDerivative(u_temp, i, dx);
-        }
+            
+        for (int i = 0; i < nx; ++i)
+            k3[i] = alpha * spatial_derivative_1d(u_temp, i, nx, dx);
 
         // Compute k4
-        for (int i = 0; i < nx; ++i) {
+        for (int i = 0; i < nx; ++i)
             u_temp[i] = u[i] + dt * k3[i];
-        }
-        for (int i = 0; i < nx; ++i) {
-            k4[i] = alpha * spatialDerivative(u_temp, i, dx);
-        }
+            
+        for (int i = 0; i < nx; ++i)
+            k4[i] = alpha * spatial_derivative_1d(u_temp, i, nx, dx);
 
         // Update the solution vector
-        for (int i = 0; i < nx; ++i) {
+        for (int i = 0; i < nx; ++i)
             u[i] += (dt / 6.0) * (k1[i] + 2.0 * k2[i] + 2.0 * k3[i] + k4[i]);
-        }
     }
 
     delete[] k1;
