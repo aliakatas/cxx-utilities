@@ -1,6 +1,8 @@
 #ifndef HARDWARE_INFO_UTILS_H
 #define HARDWARE_INFO_UTILS_H
 
+#include "string_utils.h"
+
 #include <string>
 #include <stdexcept>
 #include <sstream>
@@ -39,33 +41,46 @@ namespace hwinfoutils
         ss << "Windows " LOBYTE(sysInfo.dwMajorVersion) << "." << HIBYTE(sysInfo.dwMajorVersion);
         return ss.str();
 #elif defined(__linux__)
-        return get_info_from_system_file("/proc/version");
+        std::ifstream file("/proc/version_signature");
+        std::string line;
+        if (file.is_open()) {
+            std::getline(file, line);
+            file.close();
+            return line;
+        }
+        return "OS not detected";
 #endif
     }
 
     //*****************************************
     inline std::string get_cpu_info() noexcept(false)
     {
-        std::stringstream ss;
 #if defined(_WIN32) || defined (__WIN32__)
+        std::stringstream ss;
         SYSTEM_INFO sysInfo;
         // Get system information
         GetSystemInfo(&sysInfo);
 
         ss << sysInfo.dwNumberOfProcessors << " cores, " << sysInfo.dwProcessorSpeed / 1000 << " MHz";
-#elif defined(__linux__)
-        std::string cpuMhz = get_info_from_system_file("/sys/devices/cpu/cpufreq/cpuinfo_min_freq");
-        int numCores = std::stoi(get_info_from_system_file("/proc/cpuinfo").substr(5, 3)); // Assuming 3 chars for core count
-        ss << numCores << " cores, " << cpuMhz << " MHz";
-#endif
         return ss.str();
+#elif defined(__linux__)
+        std::ifstream file("/proc/cpuinfo");
+        std::string line;
+        if (file.is_open()) {
+            for (int i = 0; i < 5; ++i)    
+                std::getline(file, line);
+            file.close();
+            return strutils::strip_non_printable(line.substr(line.find(":") + 1));
+        }
+        return "cpu info not detected";
+#endif
     }
 
     //*****************************************
     inline std::string get_ram_info() noexcept(false)
     {
-        std::stringstream ss;
 #if defined(_WIN32) || defined (__WIN32__)
+        std::stringstream ss;
         SYSTEM_INFO sysInfo;
         // Get system information
         GetSystemInfo(&sysInfo);
@@ -73,10 +88,17 @@ namespace hwinfoutils
         DWORD ramSizeGb = sysInfo.dwTotalPhysicalMem / (1024 * 1024 * 1024);
 
         ss << ramSizeGb << " GB RAM";
-#elif defined(__linux__)
-        ss << get_info_from_system_file("/proc/meminfo") << " RAM";
-#endif
         return ss.str();
+#elif defined(__linux__)
+        std::ifstream file("/proc/meminfo");
+        std::string line;
+        if (file.is_open()) {
+            std::getline(file, line);
+            file.close();
+            return strutils::strip_non_printable(line.substr(line.find(":") + 1));
+        }
+        return "RAM info not detected";
+#endif
     }
 
 }

@@ -1,6 +1,9 @@
 #ifndef RUNTIME_UTILS_H
 #define RUNTIME_UTILS_H
 
+#include "build_version_utils.h"
+#include "hardware_info_utils.h"
+
 #include <ctime>
 #include <sstream>
 #include <string>
@@ -78,6 +81,36 @@ namespace rtu
     #ifdef _DEBUG
         ss << "\n  *** DEBUG BUILD - no optimisations ***";
     #endif 
+        return ss.str();
+    }
+
+    /**
+     * @brief Returns a message regarding the build.
+     * It includes the build date-time and compiler name/version.
+     * 
+     * @return std::string
+     */
+    inline std::string get_build_info() 
+    {
+        std::stringstream ss;
+        ss << "Build date-time: " << build_info::get_build_date_time() << "\n";
+        ss << "Compiler: " << build_info::get_compiler_info();
+        return ss.str();
+    }
+
+    /**
+     * @brief Returns details regarding the machine the program
+     * is running on.
+     * It includes OS name/version, CPU model and total RAM.
+     * 
+     * @return std::string
+     */
+    inline std::string get_machine_info()
+    {
+        std::stringstream ss;
+        ss << hwinfoutils::get_os_version() << "\n";
+        ss << hwinfoutils::get_cpu_info() << "\n";
+        ss << hwinfoutils::get_ram_info();
         return ss.str();
     }
 }
