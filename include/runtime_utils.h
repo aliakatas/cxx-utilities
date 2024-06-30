@@ -1,13 +1,8 @@
 #ifndef RUNTIME_UTILS_H
 #define RUNTIME_UTILS_H
 
-#include "build_version_utils.h"
-#include "hardware_info_utils.h"
-
-#include <ctime>
-#include <sstream>
-#include <string>
 #include <chrono>
+#include <string>
 
 namespace rtu
 {
@@ -52,16 +47,7 @@ namespace rtu
      * @param use_gmt [in] Flag to indicate use of GMT time instead of local time (default).
      * @return std::string
      */
-    inline std::string get_current_datetime_str(bool use_gmt = false) 
-    {
-        auto now = std::time(nullptr);
-        char mbstr[100];
-        if (use_gmt)
-            std::strftime(mbstr, sizeof(mbstr), "%Y-%m-%d %H:%M:%S", std::gmtime(&now));
-        else 
-            std::strftime(mbstr, sizeof(mbstr), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
-        return std::string(mbstr);
-    }
+    std::string get_current_datetime_str(bool use_gmt = false);
 
     /**
      * @brief Returns a message common to most (CLI) applications 
@@ -74,15 +60,7 @@ namespace rtu
      * @param use_gmt [in] Flag to indicate use of GMT time instead of local time (default).
      * @return std::string
      */
-    inline std::string create_banner(const std::string& app_name, bool use_gmt = false)
-    {
-        std::stringstream ss;
-        ss << "Starting " << app_name << " at " << get_current_datetime_str(use_gmt) << "...";
-    #ifdef _DEBUG
-        ss << "\n  *** DEBUG BUILD - no optimisations ***";
-    #endif 
-        return ss.str();
-    }
+    std::string create_banner(const std::string& app_name, bool use_gmt = false);
 
     /**
      * @brief Returns a message regarding the build.
@@ -90,13 +68,7 @@ namespace rtu
      * 
      * @return std::string
      */
-    inline std::string get_build_info() 
-    {
-        std::stringstream ss;
-        ss << "Build date-time: " << build_info::get_build_date_time() << "\n";
-        ss << "Compiler: " << build_info::get_compiler_info();
-        return ss.str();
-    }
+    std::string get_build_info();
 
     /**
      * @brief Returns details regarding the machine the program
@@ -105,14 +77,8 @@ namespace rtu
      * 
      * @return std::string
      */
-    inline std::string get_machine_info()
-    {
-        std::stringstream ss;
-        ss << hwinfoutils::get_os_version() << "\n";
-        ss << hwinfoutils::get_cpu_info() << "\n";
-        ss << hwinfoutils::get_ram_info();
-        return ss.str();
-    }
+    std::string get_machine_info();
+
 }
 
 #endif // RUNTIME_UTILS_H
