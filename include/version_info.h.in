@@ -1,0 +1,10 @@
+#ifndef VERSION_INFO_H
+#define VERSION_INFO_H
+
+#define VERSION_MAJOR       @VERSION_MAJOR@
+#define VERSION_MINOR       @VERSION_MINOR@
+#define VERSION_PATCH       @VERSION_PATCH@
+#define REPO_INDEX          "@GIT_HASH@"
+#define BUILD_INDEX         @DAYS_SINCE_2020@
+
+#endif // VERSION_INFO_H
