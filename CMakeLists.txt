@@ -73,12 +73,18 @@ message(STATUS "Include dir: ${INCLUDE_DIR}")
 
 # Create the executable
 add_executable(test-build-version-utils tests/test_build_version_utils.cxx)
+add_executable(test-hardware-info-utils tests/test_hardware_info_utils.cxx)
 
 # Link the standard libraries in a platform-independent way
 target_link_libraries(test-build-version-utils PRIVATE ${CMAKE_CXX_STANDARD_LIBRARIES})
+target_link_libraries(test-hardware-info-utils PRIVATE ${CMAKE_CXX_STANDARD_LIBRARIES})
 
 # Add the include directory to the application's target
 target_include_directories(test-build-version-utils PUBLIC 
+    "${INCLUDE_DIR}" 
+    "${CMAKE_BINARY_DIR}/include"
+)
+target_include_directories(test-hardware-info-utils PUBLIC 
     "${INCLUDE_DIR}" 
     "${CMAKE_BINARY_DIR}/include"
 )
