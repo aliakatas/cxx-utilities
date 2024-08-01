@@ -21,6 +21,7 @@ endfunction()
 find_preferred_cxx_compiler()
 
 project(cxx-utilities VERSION 1.0.0 LANGUAGES CXX)
+set(MODULE_NAME ${PROJECT_NAME})
 set(VERSION_MAJOR 1)
 set(VERSION_MINOR 0)
 set(VERSION_PATCH 3)
@@ -44,6 +45,11 @@ execute_process(
 configure_file(
     ${CMAKE_SOURCE_DIR}/include/version_info.h.in
     ${CMAKE_BINARY_DIR}/include/version_info.h
+)
+# Configure the module name header file
+configure_file(
+    ${CMAKE_SOURCE_DIR}/include/module_name.h.in
+    ${CMAKE_BINARY_DIR}/include/module_name.h
 )
 
 # Specify the C++ standard
@@ -108,6 +114,7 @@ endif()
 if(BUILD_DEBUG)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS} ${DEBUG_FLAGS}")
     target_compile_definitions(test-build-version-utils PRIVATE "_DEBUG")
+    target_compile_definitions(test-hardware-info-utils PRIVATE "_DEBUG")
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS} ${RELEASE_FLAGS}")
 endif()

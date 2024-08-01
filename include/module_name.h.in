@@ -1,0 +1,6 @@
+#ifndef MODULE_NAME_H
+#define MODULE_NAME_H
+
+#define MODULE_NAME            "@MODULE_NAME@"
+
+#endif // MODULE_NAME_H
