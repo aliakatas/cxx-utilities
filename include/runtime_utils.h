@@ -39,6 +39,43 @@ namespace rtu
 
             return static_cast<double>(e - s);  // of unit => unit_t
         }
+
+        /**
+         * Returns the time elapsed in a suitable unit with a string.
+         */
+        struct ElapsedTime
+        {
+            double time;
+            std::string unit;
+        };
+
+        ElapsedTime elapsed_adaptive()
+        {
+            using namespace std::chrono;
+            auto end = high_resolution_clock::now();
+            auto duration = end - start;
+
+            double milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+            
+            if (milliseconds < 10000)   // 10 seconds
+            {
+                return { milliseconds, "milliseconds" };
+            }
+            else if (milliseconds < 3 * 60 * 1000) // 3 minutes
+            {
+                double seconds = std::chrono::duration_cast<std::chrono::seconds>(duration).count();
+                return { seconds, "seconds" };
+            }
+            else if (milliseconds < 3600 * 1000) // 1 hour
+            {
+                double minutes = std::chrono::duration_cast<std::chrono::minutes>(duration).count();
+                return { minutes, "minutes" };
+            }
+            
+            // hours.. 
+            double hours = std::chrono::duration_cast<std::chrono::hours>(duration).count();
+            return { hours, "hours" };
+        }
     };
 
     /**
@@ -47,37 +84,16 @@ namespace rtu
      * @param use_gmt [in] Flag to indicate use of GMT time instead of local time (default).
      * @return std::string
      */
-    std::string get_current_datetime_str(bool use_gmt = false);
-
-    /**
-     * @brief Returns a message common to most (CLI) applications 
-     * including the name of the application and when the instance 
-     * has started. 
-     * 
-     * If a debug build is detected, an appropriate message is added.
-     * 
-     * @param app_name [in] The name of the application.
-     * @param use_gmt [in] Flag to indicate use of GMT time instead of local time (default).
-     * @return std::string
-     */
-    std::string create_banner(const std::string& app_name, bool use_gmt = false);
-
-    /**
-     * @brief Returns a message regarding the build.
-     * It includes the build date-time and compiler name/version.
-     * 
-     * @return std::string
-     */
-    std::string get_build_info();
-
-    /**
-     * @brief Returns details regarding the machine the program
-     * is running on.
-     * It includes OS name/version, CPU model and total RAM.
-     * 
-     * @return std::string
-     */
-    std::string get_machine_info();
+    inline std::string get_current_datetime_str(bool use_gmt = false)
+    {
+        auto now = std::time(nullptr);
+        char mbstr[100];
+        if (use_gmt)
+            std::strftime(mbstr, sizeof(mbstr), "%Y-%m-%d %H:%M:%S", std::gmtime(&now));
+        else 
+            std::strftime(mbstr, sizeof(mbstr), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
+        return std::string(mbstr);
+    }
 
 }
 
