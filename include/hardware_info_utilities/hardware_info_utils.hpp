@@ -1,7 +1,7 @@
 #ifndef HARDWARE_INFO_UTILS_H
 #define HARDWARE_INFO_UTILS_H
 
-#include "string_utils.h"
+#include "string_utilities/string_utils.hpp"
 
 #include <string>
 #include <stdexcept>

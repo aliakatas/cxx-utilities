@@ -4,7 +4,7 @@
 #include <chrono>
 #include <string>
 
-namespace rtu
+namespace timeutil
 {
     /**
      * @brief A structure to facilitate measuring performance of parts

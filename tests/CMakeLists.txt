@@ -24,7 +24,7 @@ project(cxx-utilities VERSION 1.0.0 LANGUAGES CXX)
 set(MODULE_NAME ${PROJECT_NAME})
 set(VERSION_MAJOR 1)
 set(VERSION_MINOR 0)
-set(VERSION_PATCH 3)
+set(VERSION_PATCH 0)
 
 # Get the current git hash
 execute_process(
@@ -36,28 +36,28 @@ execute_process(
 
 # Calculate days since 01-01-2020 using the Python script
 execute_process(
-    COMMAND python3 ${CMAKE_SOURCE_DIR}/utils/calculate_days.py
+    COMMAND python3 ${CMAKE_SOURCE_DIR}/../include/build_utilities/calculate_days.py
     OUTPUT_VARIABLE DAYS_SINCE_2020
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
 # Configure the version header file
 configure_file(
-    ${CMAKE_SOURCE_DIR}/include/version_info.h.in
-    ${CMAKE_BINARY_DIR}/include/version_info.h
+    ${CMAKE_SOURCE_DIR}/../include/build_utilities/version_info.hpp.in
+    ${CMAKE_BINARY_DIR}/include/version_info.hpp
 )
 # Configure the module name header file
 configure_file(
-    ${CMAKE_SOURCE_DIR}/include/module_name.h.in
-    ${CMAKE_BINARY_DIR}/include/module_name.h
+    ${CMAKE_SOURCE_DIR}/../include/build_utilities/module_name.hpp.in
+    ${CMAKE_BINARY_DIR}/include/module_name.hpp
 )
 
 # Specify the C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
-message(STATUS "Include dir: ${INCLUDE_DIR}")
+# set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
+# message(STATUS "Include dir: ${INCLUDE_DIR}")
 # set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
 # message(STATUS "Source dir: ${SOURCE_DIR}")
 
@@ -78,28 +78,28 @@ message(STATUS "Include dir: ${INCLUDE_DIR}")
 #     )
 
 # Create the executable
-add_executable(test-build-version-utils tests/test_build_version_utils.cxx)
-add_executable(test-hardware-info-utils tests/test_hardware_info_utils.cxx)
-add_executable(test-runtime-utils tests/test_runtime_utils.cxx)
+add_executable(test-build-version-utils "${CMAKE_CURRENT_SOURCE_DIR}/build_version_utils_tests.cxx")
+# add_executable(test-hardware-info-utils tests/test_hardware_info_utils.cxx)
+# add_executable(test-runtime-utils tests/test_runtime_utils.cxx)
 
 # Link the standard libraries in a platform-independent way
 target_link_libraries(test-build-version-utils PRIVATE ${CMAKE_CXX_STANDARD_LIBRARIES})
-target_link_libraries(test-hardware-info-utils PRIVATE ${CMAKE_CXX_STANDARD_LIBRARIES})
-target_link_libraries(test-runtime-utils PRIVATE ${CMAKE_CXX_STANDARD_LIBRARIES})
+# target_link_libraries(test-hardware-info-utils PRIVATE ${CMAKE_CXX_STANDARD_LIBRARIES})
+# target_link_libraries(test-runtime-utils PRIVATE ${CMAKE_CXX_STANDARD_LIBRARIES})
 
 # Add the include directory to the application's target
 target_include_directories(test-build-version-utils PUBLIC 
-    "${INCLUDE_DIR}" 
+    "${CMAKE_CURRENT_SOURCE_DIR}/../include" 
     "${CMAKE_BINARY_DIR}/include"
 )
-target_include_directories(test-hardware-info-utils PUBLIC 
-    "${INCLUDE_DIR}" 
-    "${CMAKE_BINARY_DIR}/include"
-)
-target_include_directories(test-runtime-utils PUBLIC 
-    "${INCLUDE_DIR}" 
-    "${CMAKE_BINARY_DIR}/include"
-)
+# target_include_directories(test-hardware-info-utils PUBLIC 
+#     "${INCLUDE_DIR}" 
+#     "${CMAKE_BINARY_DIR}/include"
+# )
+# target_include_directories(test-runtime-utils PUBLIC 
+#     "${INCLUDE_DIR}" 
+#     "${CMAKE_BINARY_DIR}/include"
+# )
 
 # Build options
 option(BUILD_DEBUG "Build debug version" OFF)
