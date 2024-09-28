@@ -4,7 +4,7 @@
 #include <chrono>
 #include <string>
 
-namespace timeutil
+namespace timeutils
 {
     /**
      * @brief A structure to facilitate measuring performance of parts
