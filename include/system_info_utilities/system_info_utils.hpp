@@ -1,5 +1,5 @@
-#ifndef HARDWARE_INFO_UTILS_H
-#define HARDWARE_INFO_UTILS_H
+#ifndef SYSTEM_INFO_UTILS_H
+#define SYSTEM_INFO_UTILS_H
 
 #include "string_utilities/string_utils.hpp"
 
@@ -13,7 +13,7 @@
 #include <fstream>
 #endif
 
-namespace hwinfoutils
+namespace sysinfoutils
 {
     /**
      * @brief Returns the version of the OS.
@@ -101,4 +101,4 @@ namespace hwinfoutils
     
 }
 
-#endif // HARDWARE_INFO_UTILS_H
+#endif // SYSTEM_INFO_UTILS_H

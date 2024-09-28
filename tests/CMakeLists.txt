@@ -56,35 +56,14 @@ configure_file(
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# set(INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include")
-# message(STATUS "Include dir: ${INCLUDE_DIR}")
-# set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
-# message(STATUS "Source dir: ${SOURCE_DIR}")
-
-# # Define the executable sources
-# file(GLOB EXECUTABLE_SOURCES 
-#     "${SOURCE_DIR}/*.cpp" 
-#     "${SOURCE_DIR}/*.cxx"
-#     "${CMAKE_CURRENT_SOURCE_DIR}/cxx-utilities/src/*.cpp"
-#     "${CMAKE_CURRENT_SOURCE_DIR}/cxx-utilities/src/*.cxx"
-#     )
-
-# # Define the executable headers
-# file(GLOB EXECUTABLE_HEADERS 
-#     "${INCLUDE_DIR}/*.h" 
-#     "${INCLUDE_DIR}/*.hpp"
-#     "${CMAKE_CURRENT_SOURCE_DIR}/cxx-utilities/include/*.h"
-#     "${CMAKE_CURRENT_SOURCE_DIR}/cxx-utilities/include/*.hpp"
-#     )
-
 # Create the executable
 add_executable(test-build-version-utils "${CMAKE_CURRENT_SOURCE_DIR}/build_version_utils_tests.cxx")
-# add_executable(test-hardware-info-utils tests/test_hardware_info_utils.cxx)
+add_executable(test-system-info-utils "${CMAKE_CURRENT_SOURCE_DIR}/system_info_utils_tests.cxx")
 # add_executable(test-runtime-utils tests/test_runtime_utils.cxx)
 
 # Link the standard libraries in a platform-independent way
 target_link_libraries(test-build-version-utils PRIVATE ${CMAKE_CXX_STANDARD_LIBRARIES})
-# target_link_libraries(test-hardware-info-utils PRIVATE ${CMAKE_CXX_STANDARD_LIBRARIES})
+target_link_libraries(test-system-info-utils PRIVATE ${CMAKE_CXX_STANDARD_LIBRARIES})
 # target_link_libraries(test-runtime-utils PRIVATE ${CMAKE_CXX_STANDARD_LIBRARIES})
 
 # Add the include directory to the application's target
@@ -92,10 +71,10 @@ target_include_directories(test-build-version-utils PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/../include" 
     "${CMAKE_BINARY_DIR}/include"
 )
-# target_include_directories(test-hardware-info-utils PUBLIC 
-#     "${INCLUDE_DIR}" 
-#     "${CMAKE_BINARY_DIR}/include"
-# )
+target_include_directories(test-system-info-utils PUBLIC 
+    "${CMAKE_CURRENT_SOURCE_DIR}/../include" 
+   #  "${CMAKE_BINARY_DIR}/include"
+)
 # target_include_directories(test-runtime-utils PUBLIC 
 #     "${INCLUDE_DIR}" 
 #     "${CMAKE_BINARY_DIR}/include"
@@ -120,7 +99,7 @@ endif()
 if(BUILD_DEBUG)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS} ${DEBUG_FLAGS}")
     target_compile_definitions(test-build-version-utils PRIVATE "_DEBUG")
-   #  target_compile_definitions(test-hardware-info-utils PRIVATE "_DEBUG")
+    target_compile_definitions(test-system-info-utils PRIVATE "_DEBUG")
    #  target_compile_definitions(test-runtime-utils PRIVATE "_DEBUG")
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS} ${RELEASE_FLAGS}")
