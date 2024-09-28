@@ -60,11 +60,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_executable(test-build-version-utils "${CMAKE_CURRENT_SOURCE_DIR}/build_version_utils_tests.cxx")
 add_executable(test-system-info-utils "${CMAKE_CURRENT_SOURCE_DIR}/system_info_utils_tests.cxx")
 add_executable(test-time-utils "${CMAKE_CURRENT_SOURCE_DIR}/time_utils_tests.cxx")
+add_executable(test-maths-operations "${CMAKE_CURRENT_SOURCE_DIR}/maths_operations_tests.cxx")
 
 # Link the standard libraries in a platform-independent way
 target_link_libraries(test-build-version-utils PRIVATE ${CMAKE_CXX_STANDARD_LIBRARIES})
 target_link_libraries(test-system-info-utils PRIVATE ${CMAKE_CXX_STANDARD_LIBRARIES})
 target_link_libraries(test-time-utils PRIVATE ${CMAKE_CXX_STANDARD_LIBRARIES})
+target_link_libraries(test-maths-operations PRIVATE ${CMAKE_CXX_STANDARD_LIBRARIES})
 
 # Add the include directory to the application's target
 target_include_directories(test-build-version-utils PUBLIC 
@@ -73,11 +75,12 @@ target_include_directories(test-build-version-utils PUBLIC
 )
 target_include_directories(test-system-info-utils PUBLIC 
     "${CMAKE_CURRENT_SOURCE_DIR}/../include" 
-   #  "${CMAKE_BINARY_DIR}/include"
 )
 target_include_directories(test-time-utils PUBLIC 
     "${CMAKE_CURRENT_SOURCE_DIR}/../include" 
-   #  "${CMAKE_BINARY_DIR}/include"
+)
+target_include_directories(test-maths-operations PUBLIC 
+    "${CMAKE_CURRENT_SOURCE_DIR}/../include" 
 )
 
 # Build options
@@ -101,6 +104,7 @@ if(BUILD_DEBUG)
     target_compile_definitions(test-build-version-utils PRIVATE "_DEBUG")
     target_compile_definitions(test-system-info-utils PRIVATE "_DEBUG")
     target_compile_definitions(test-time-utils PRIVATE "_DEBUG")
+    target_compile_definitions(test-maths-operations PRIVATE "_DEBUG")
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS} ${RELEASE_FLAGS}")
 endif()
