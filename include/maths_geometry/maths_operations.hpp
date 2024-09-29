@@ -128,10 +128,7 @@ namespace maths_ops
     */
    template <typename T>
    HOSTDEVDECOR
-   typename std::enable_if<
-      std::is_same<T, float>::value || 
-      std::is_same<T, double>::value ||
-      std::is_same<T, long double>::value, bool>::type
+   typename std::enable_if<std::is_floating_point<T>::value, bool>::type
    are_equal(T a, T b, T epsilon = std::numeric_limits<T>::epsilon()) {
       return std::fabs(a - b) < epsilon;
    }
@@ -147,10 +144,7 @@ namespace maths_ops
     */
    template <typename T>
    HOSTDEVDECOR
-   typename std::enable_if<
-      std::is_same<T, float>::value || 
-      std::is_same<T, double>::value ||
-      std::is_same<T, long double>::value, T>::type
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
    deg_to_rad(const T d)
    {
       return M_PI * d / ONE_EIGHTY_DEG;
@@ -167,10 +161,7 @@ namespace maths_ops
     */
    template <typename T>
    HOSTDEVDECOR
-   typename std::enable_if<
-      std::is_same<T, float>::value || 
-      std::is_same<T, double>::value ||
-      std::is_same<T, long double>::value, T>::type
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
    rad_to_deg(const T r)
    {
       return ONE_EIGHTY_DEG * r / M_PI;
@@ -185,10 +176,7 @@ namespace maths_ops
     */
    template <typename T>
    HOSTDEVDECOR 
-   typename std::enable_if<
-      std::is_same<T, float>::value || 
-      std::is_same<T, double>::value ||
-      std::is_same<T, long double>::value, T>::type
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
    get_0_360_deg(T d)
    {
       while (d < 0) {
@@ -209,10 +197,7 @@ namespace maths_ops
     */
    template <typename T>
    HOSTDEVDECOR 
-   typename std::enable_if<
-      std::is_same<T, float>::value || 
-      std::is_same<T, double>::value ||
-      std::is_same<T, long double>::value, T>::type
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
    get_0_2pi_rad(T r)
    {
       while (r < 0) {
@@ -234,10 +219,7 @@ namespace maths_ops
     */
    template <typename T>
    HOSTDEVDECOR 
-   typename std::enable_if<
-      std::is_same<T, float>::value || 
-      std::is_same<T, double>::value ||
-      std::is_same<T, long double>::value, T>::type
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
    to_compass_angle_deg(T d)
    {
       d = 90 - d;
@@ -254,10 +236,7 @@ namespace maths_ops
     */
    template <typename T>
    HOSTDEVDECOR 
-   typename std::enable_if<
-      std::is_same<T, float>::value || 
-      std::is_same<T, double>::value ||
-      std::is_same<T, long double>::value, T>::type
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
    to_compass_angle_rad(T r)
    {
       r = (M_PI / 2) - r;
@@ -275,10 +254,7 @@ namespace maths_ops
     */
    template <typename T>
    HOSTDEVDECOR 
-   typename std::enable_if<
-      std::is_same<T, float>::value || 
-      std::is_same<T, double>::value ||
-      std::is_same<T, long double>::value, T>::type
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
    convert_to_meteorological_dir_deg(T d)
    {
       d += 180;
@@ -296,10 +272,7 @@ namespace maths_ops
     */
    template <typename T>
    HOSTDEVDECOR 
-   typename std::enable_if<
-      std::is_same<T, float>::value || 
-      std::is_same<T, double>::value ||
-      std::is_same<T, long double>::value, T>::type
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
    convert_to_meteorological_dir_rad(T r)
    {
       r += M_PI;
@@ -318,10 +291,7 @@ namespace maths_ops
     */
    template <typename T>
    HOSTDEVDECOR 
-   typename std::enable_if<
-      std::is_same<T, float>::value || 
-      std::is_same<T, double>::value ||
-      std::is_same<T, long double>::value, T>::type
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
    vector_magnitude(const T x, const T y)
    {
       return std::sqrt(x * x + y * y);
@@ -339,90 +309,309 @@ namespace maths_ops
     */
    template <typename T>
    HOSTDEVDECOR 
-   typename std::enable_if<
-      std::is_same<T, float>::value || 
-      std::is_same<T, double>::value ||
-      std::is_same<T, long double>::value, T>::type
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
    vector_direction(const T x, const T y)
    {
-      return atan2(y, x);
+      return std::atan2(y, x);
    }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR T points_squared_distance(const T x, const T y, const T x_origin, const T y_origin)
-   // {
-   //    return (x - x_origin) * (x - x_origin) + (y - y_origin) * (y - y_origin);
-   // }
+   /**
+    * @brief Calculates the squared value of the distance 
+    * between two points in euclidean space.
+    * 
+    * It does not perform any sanity checks on the input values.
+    * 
+    * @tparam T Supports float, double and long double.
+    * @param x1 [in] The x-coordinate of the first point.
+    * @param y1 [in] The y-coordinate of the first point.
+    * @param x2 [in] The x-coordinate of the second point.
+    * @param y2 [in] The y-coordinate of the second point.
+    * @return Distance squred.
+    */
+   template <typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
+   points_squared_distance(const T x1, const T y1, const T x2, const T y2)
+   {
+      return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+   }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR T points_distance(const T x, const T y, const T x_origin, const T y_origin)
-   // {
-   //    return vector_magnitude(x - x_origin, y - y_origin);
-   // }
+   /**
+    * @brief Calculates the euclidean distance 
+    * between two points in euclidean space.
+    * 
+    * It does not perform any sanity checks on the input values.
+    * 
+    * @tparam T Supports float, double and long double.
+    * @param x1 [in] The x-coordinate of the first point.
+    * @param y1 [in] The y-coordinate of the first point.
+    * @param x2 [in] The x-coordinate of the second point.
+    * @param y2 [in] The y-coordinate of the second point.
+    * @return Distance.
+    */
+   template <typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
+   points_distance(const T x1, const T y1, const T x2, const T y2)
+   {
+      return std::sqrt(points_squared_distance(x1, y1, x2, y2));
+   }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR void calculate_rotation_matrix(T angle_rad, T* rotation_matrix)
-   // {
-   //    rotation_matrix[0] = cos(angle_rad);
-   //    rotation_matrix[1] = -sin(angle_rad);
-   //    rotation_matrix[2] = sin(angle_rad);
-   //    rotation_matrix[3] = cos(angle_rad);
-   // }
+   /**
+    * @brief Calculates the 2D rotation matrix.
+    * 
+    * @tparam T Supports float, double and long double.
+    * @param angle_rad [in] The angle in radians.
+    * @param rotation_matrix [out] The rotation matrix. Must have at least 4 elements. Memory allocation must happen before calling this
+    */
+   template <typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value, void>::type
+   calculate_rotation_matrix(T angle_rad, T* rotation_matrix)
+   {
+      rotation_matrix[0] = std::cos(angle_rad);
+      rotation_matrix[1] = -std::sin(angle_rad);
+      rotation_matrix[2] = std::sin(angle_rad);
+      rotation_matrix[3] = std::cos(angle_rad);
+   }
 
-   // //##################################################################
-   // template <typename T, typename RM>
-   // HOSTDEVDECOR void rotate_point(T* x, T* y, const RM* rotation_matrix)
-   // {
-   //    T xtemp = *x;
-   //    T ytemp = *y;
-   //    *x = rotation_matrix[0] * xtemp + rotation_matrix[1] * ytemp;
-   //    *y = rotation_matrix[2] * xtemp + rotation_matrix[3] * ytemp;
-   // }
+   /**
+    * @brief Translates a 2D point in 2D.
+    * 
+    * It does not perform any sanity checks on the input values.
+    * 
+    * @tparam T Supports float, double and long double.
+    * @param x [inout] The x-coordinate of the point.
+    * @param y [inout] They y-coordinate of the point.
+    * @param dx [in] The displacement in x-direction.
+    * @param dy [in] The displacement in y-direction.
+    */
+   template <typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value, void>::type
+   translate_point(T* x, T* y, const T dx, const T dy)
+   {
+      *x += dx;
+      *y += dy;
+   }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR void translate_point(T* x, T* y, const T x0, const T y0)
-   // {
-   //    *x += x0;
-   //    *y += y0;
-   // }
+   /**
+    * @brief Rotates a 2D point given the rotation matrix.
+    * The point is rotated about the axes origin.
+    * 
+    * It does not perform any sanity checks on the input values.
+    * 
+    * @tparam T Supports float, double and long double.
+    * @tparam RM Supports float, double and long double.
+    * @param x [inout] The x-coordinate of the point.
+    * @param y [inout] The y-coordinate of the point.
+    * @param rotation_matrix [in] The rotation matrix to be applied.
+    */
+   template <typename T, typename RM>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value && std::is_floating_point<RM>::value, void>::type
+   rotate_point(T* x, T* y, const RM* rotation_matrix)
+   {
+      T xtemp = *x;
+      T ytemp = *y;
+      *x = static_cast<T>(rotation_matrix[0] * xtemp + rotation_matrix[1] * ytemp);
+      *y = static_cast<T>(rotation_matrix[2] * xtemp + rotation_matrix[3] * ytemp);
+   }
 
-   // //##################################################################
-   // template <typename T, typename RM, typename Tref>
-   // HOSTDEVDECOR void rotate_point_about(T* x, T* y, const RM* rot_mat, const Tref xref, const Tref yref)
-   // {
-   //    *x -= xref;
-   //    *y -= yref;
-   //    T xnew = *x * rot_mat[0] + *y * rot_mat[1];
-   //    T ynew = *x * rot_mat[2] + *y * rot_mat[3];
-   //    *x = xnew + xref;
-   //    *y = ynew + yref;
-   // }
+   /**
+    * @brief Rotates a 2D point about another point in 2D space.
+    * 
+    * It does not perform any sanity checks on the input values.
+    * 
+    * @tparam T Supports float, double and long double.
+    * @tparam RM Supports float, double and long double.
+    * @tparam Tref Supports float, double and long double.
+    * @param x [inout] The x-coordinate of the point.
+    * @param y [inout] The y-coordinate of the point.
+    * @param rot_mat [in] The rotation matrix to be applied.
+    * @param xref [in] The x-coordinate of the point to rotate about.
+    * @param yref [in] The y-coordinate of the point to rotate about.
+    */
+   template <typename T, typename RM, typename Tref>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value && 
+      std::is_floating_point<RM>::value &&
+      std::is_floating_point<Tref>::value, void>::type
+   rotate_point_about(T* x, T* y, const RM* rot_mat, const Tref xref, const Tref yref)
+   {
+      translate_point(x, y, -xref, -yref);
+      rotate_point(x, y, rot_mat);
+      translate_point(x, y, xref, yref);
+   }
 
-   // //##################################################################
-   // template <typename T, typename idx_t, typename GT>
-   // HOSTDEVDECOR void apply_affine_transformation(T* x, T* y, const idx_t irow, const idx_t icol, const GT* geotransform)
-   // {
-   //    *x = geotransform[0] + icol * geotransform[1] + irow * geotransform[2];
-   //    *y = geotransform[3] + icol * geotransform[4] + irow * geotransform[5];
-   // }
+   /**
+    * @brief Calculates the dot product of two vectors in 2D.
+    * 
+    * @tparam T Supports float, double and long double.
+    * @param a_x [in] The x-component of the first vector.
+    * @param a_y [in] The y-component of the first vector.
+    * @param b_x [in] The x-component of the second vector.
+    * @param b_y [in] The y-component of the second vector.
+    * @return Dot product.
+    */
+   template <typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
+   dot_product(const T a_x, const T a_y, const T b_x, const T b_y)
+   {
+      return a_x * b_x + a_y * b_y;
+   }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR T dot_product(const T a_x, const T a_y, const T b_x, const T b_y)
-   // {
-   //    return a_x * b_x + a_y * b_y;
-   // }
+   /**
+    * @brief Calculates the z-component of the cross-product of 
+    * two vectors in 2D space.
+    * 
+    * @tparam T Supports float, double and long double.
+    * @param a_x [in] The x-component of the first vector.
+    * @param a_y [in] The y-component of the first vector.
+    * @param b_x [in] The x-component of the second vector.
+    * @param b_y [in] The y-component of the second vector.
+    * @return z-component of the cross product.
+    */
+   template <typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
+   cross_product(const T a_x, const T a_y, const T b_x, const T b_y)
+   {
+      return a_x * b_y - a_y * b_x;
+   }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR T cross_product(const T a_x, const T a_y, const T b_x, const T b_y)
-   // {
-   //    return a_x * b_y - a_y * b_x;
-   // }
+   /**
+    * @brief Creates the geotransform array according to
+    * https://gdal.org/en/latest/tutorials/geotransforms_tut.html.
+    * 
+    * It does not perform any sanity checks on the input values.
+    * 
+    * @tparam GT Supports float, double and long double.
+    * @tparam T Supports float, double and long double.
+    * @param geotransform [out] The geotransform array. Must be at least 6 elements long. Memory allocation must happen before calling this.
+    * @param x_top_left [in] x-coordinate of the top left corner of the image.
+    * @param y_top_left [in] y-coordinate of the top left corner of the image.
+    * @param dx [in] x-coordinate of the image resolution. For rotated images, it corresponds to the "horizontal" analysis if the image was north-up. Must be positive.
+    * @param dy [in] y-coordinate of the image resolution. For rotated images, it corresponds to the "vertical" analysis if the image was north-up. Must be positive.
+    * @param angle_rad [in] Angle of rotation of the image in radians.
+    */
+   template <typename GT, typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<GT>::value && std::is_floating_point<T>::value, void>::type
+   set_affine_geotransform(GT* geotransform, 
+      const T x_top_left, const T y_top_left, const T dx, const T dy, const T angle_rad)
+   {
+      geotransform[0] = static_cast<GT>(x_top_left);
+      geotransform[1] = static_cast<GT>(dx * std::cos(angle_rad));
+      geotransform[2] = static_cast<GT>(dy * std::sin(angle_rad));
+      geotransform[3] = static_cast<GT>(y_top_left);
+      geotransform[4] = static_cast<GT>(dx * std::sin(angle_rad));
+      geotransform[5] = static_cast<GT>(-dy * std::cos(angle_rad));
+   }
+
+   /**
+    * @brief Retrieve the information used to build the geotransform
+    * according to https://gdal.org/en/latest/tutorials/geotransforms_tut.html.
+    * 
+    * It does not perform any sanity checks on the input values.
+    * 
+    * @tparam T Supports float, double and long double.
+    * @tparam GT Supports float, double and long double.
+    * @param x_top_left [out] x-coordinate of the top left corner of the image.
+    * @param y_top_left [out] y-coordinate of the top left corner of the image.
+    * @param dx [out] x-coordinate of the image resolution. For rotated images, it corresponds to the "horizontal" analysis if the image was north-up.
+    * @param dy [out] y-coordinate of the image resolution. For rotated images, it corresponds to the "vertical" analysis if the image was north-up.
+    * @param angle_rad [out] Angle of rotation of the image in radians.
+    * @param geotransform [in] The geotransform array.
+    */
+   template <typename T, typename GT>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value && std::is_floating_point<GT>::value, void>::type
+   decrypt_affine_geotransform(T* x_top_left, T* y_top_left,
+      T* dx, T* dy, T* angle_rad, const GT* geotransform)
+   {
+      // Get the origin
+      *x_top_left = static_cast<T>(geotransform[0]);
+      *y_top_left = static_cast<T>(geotransform[3]);
+
+      // Get the angle as well as the resolution
+      *angle_rad = std::atan(geotransform[4] / geotransform[1]);
+      if (std::abs(*angle_rad) > 1.e-6) {
+         *dx = geotransform[1] / std::cos(*angle_rad);
+         *dy = -geotransform[5] / std::cos(*angle_rad);
+      }
+      else {
+         *dx = geotransform[1];
+         *dy = -geotransform[5];
+      }
+   }
+
+   /**
+    * @brief Applies the geotransform to calculate the x and y
+    * coordinates of an image according to 
+    * https://gdal.org/en/latest/tutorials/geotransforms_tut.html.
+    * 
+    * It does not perform any sanity checks on the input values.
+    * 
+    * @tparam T Supports float, double and long double.
+    * @tparam index_t Supports any data type that is numerical or can be converted (implicitly or not) to a numerical value.
+    * @tparam GT Supports float, double and long double.
+    * @param x [out] x-coordinate of the point (pixel).
+    * @param y [out] y-coordinate of the point (pixel).
+    * @param irow [in] The row index to use for the pixel.
+    * @param icol [in] The column index to use for the pixel.
+    * @param geotransform [in] The geotransform array.
+    */
+   template <typename T, typename index_t, typename GT>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value && 
+      std::is_arithmetic<index_t>::value &&
+      std::is_floating_point<GT>::value, void>::type
+   apply_geotransform(T* x, T* y, 
+      const index_t irow, const index_t icol, const GT* geotransform)
+   {
+      *x = static_cast<T>(geotransform[0] + icol * geotransform[1] + irow * geotransform[2]);
+      *y = static_cast<T>(geotransform[3] + icol * geotransform[4] + irow * geotransform[5]);
+   }
+
+   /**
+    * @brief Applies the inverse geotransform to retrieve the 
+    * row and column indexes for a pixel given the x and y 
+    * coordinates according to https://gdal.org/en/latest/tutorials/geotransforms_tut.html.
+    * 
+    * The result is rounded to the nearest integer value. No bound or overflow checks.
+    * 
+    * It does not perform any sanity checks on the input values.
+    * 
+    * @tparam index_t Supports int, long, long long and size_t.
+    * @tparam T Supports float, double and long double.
+    * @tparam GT Supports float, double and long double.
+    * @param irow [out] Row index.
+    * @param icol [out] Column index.
+    * @param x [in] x-coordinate of the pixel.
+    * @param y [in] y-coordinate of the pixel.
+    * @param geotransform [in] The geotransform array.
+    */
+   template <typename index_t, typename T, typename GT>
+   HOSTDEVDECOR 
+   typename std::enable_if<
+      (std::is_same<index_t, int>::value || std::is_same<index_t, long>::value || std::is_same<index_t, long long>::value || std::is_same<index_t, size_t>::value) &&
+      std::is_floating_point<T>::value && 
+      std::is_floating_point<GT>::value, void>::type
+   apply_inverse_geotransform(index_t* irow, index_t* icol, 
+      const T x, const T y, const GT* geotransform)
+   {
+      T Dx = static_cast<T>(x - geotransform[0]);
+      T Dy = static_cast<T>(y - geotransform[3]);
+
+      T det = static_cast<T>(geotransform[1] * geotransform[5] - geotransform[2] * geotransform[4]);
+      T det_icol = static_cast<T>(Dx * geotransform[5] - geotransform[2] * Dy);
+      T det_irow = static_cast<T>(geotransform[1] * Dy - Dx * geotransform[4]);
+
+      *irow = static_cast<index_t>(std::round(det_irow / det));
+      *icol = static_cast<index_t>(std::round(det_icol / det));
+   }
 
    // //##################################################################
    // template <typename T>
@@ -472,58 +661,6 @@ namespace maths_ops
    //    return cross_product(unit_vec_x, unit_vec_y, vec_x, vec_y);
    // }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR void set_affine_transformation(T* geotransform, T x_top_left, T y_top_left, T dx, T dy, T angle_deg)
-   // {
-   //    T angle_rad = deg_to_rad(angle_deg);
-   //    geotransform[0] = x_top_left;
-   //    geotransform[1] = dx * std::cos(angle_rad);
-   //    geotransform[2] = dy * std::sin(angle_rad);
-   //    geotransform[3] = y_top_left;
-   //    geotransform[4] = dx * std::sin(angle_rad);
-   //    geotransform[5] = -dy * std::cos(angle_rad);
-   // }
-
-   // //##################################################################
-   // template <typename T, typename gT>
-   // HOSTDEVDECOR void decrypt_affine_transformation_matrix(T* top_left_x, T* top_left_y,
-   //    T* dx, T* dy, T* angle_rad, const gT* transform_matrix)
-   // {
-   //    // Get the origin
-   //    *top_left_x = transform_matrix[0];
-   //    *top_left_y = transform_matrix[3];
-
-   //    // Get the angle as well as the resolution
-   //    *angle_rad = std::atan(transform_matrix[4] / transform_matrix[1]);
-   //    if (std::abs(*angle_rad) > 1.e-6) {
-   //       *dx = transform_matrix[1] / std::cos(*angle_rad);
-   //       *dy = -transform_matrix[5] / std::cos(*angle_rad);
-   //    }
-   //    else {
-   //       *dx = transform_matrix[1];
-   //       *dy = -transform_matrix[5];
-   //    }
-   // }
-
-   // //##################################################################
-   // template <typename T, typename gT>
-   // HOSTDEVDECOR void apply_inverse_affine_transformation(int* irow, int* icol, const T x, const T y, const gT* transform_matrix)
-   // {
-   //    T Dx = x - transform_matrix[0];
-   //    T Dy = y - transform_matrix[3];
-
-   //    T det = transform_matrix[1] * transform_matrix[5] - transform_matrix[2] * transform_matrix[4];
-   //    T det_icol = Dx * transform_matrix[5] - transform_matrix[2] * Dy;
-   //    T det_irow = transform_matrix[1] * Dy - Dx * transform_matrix[4];
-
-   //    *irow = static_cast<int>(round(det_irow / det));
-   //    *icol = static_cast<int>(round(det_icol / det));
-   //    //*irow = static_cast<int>(floor(det_irow / det));
-   //    //*icol = static_cast<int>(floor(det_icol / det));
-   //    //*irow = static_cast<int>(det_irow / det);
-   //    //*icol = static_cast<int>(det_icol / det);
-   // }
 
    // //##################################################################
    // template <typename T>
@@ -684,10 +821,7 @@ namespace maths_ops
     */
    template <typename T>
    HOSTDEVDECOR 
-   typename std::enable_if<
-      std::is_same<T, float>::value || 
-      std::is_same<T, double>::value ||
-      std::is_same<T, long double>::value, T>::type
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
    interp_linear(const T x, const T x0, const T y0, const T x1, const T y1)
    {
       return y0 + (x - x0) * (y1 - y0) / (x1 - x0);

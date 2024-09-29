@@ -370,6 +370,145 @@ int main()
       std::cout << " (" << maths_ops::rad_to_deg(maths_ops::vector_direction(x, y)) << "deg)" << std::endl;
    }
 
+   // --- points_squared_distance ---
+   std::cout << "\nTesting 'points_squared_distance' \n";
+   {
+      float x1 = 1.1f;
+      float y1 = 3.67f;
+      float x2 = -1.1f;
+      float y2 = -3.67f;
+      std::cout << " (" << x1 << ", " << y1 << ") -- (" << x2 << ", " << y2 << ") = ";
+      std::cout << maths_ops::points_squared_distance(x1, y1, x2, y2) << std::endl;
+   }
+
+   // --- points_distance ---
+   std::cout << "\nTesting 'points_distance' \n";
+   {
+      float x1 = 1.1f;
+      float y1 = 3.67f;
+      float x2 = -1.1f;
+      float y2 = -3.67f;
+      std::cout << " (" << x1 << ", " << y1 << ") -- (" << x2 << ", " << y2 << ") = ";
+      std::cout << maths_ops::points_distance(x1, y1, x2, y2) << std::endl;
+   }
+
+   // --- calculate_rotation_matrix ---
+   std::cout << "\nTesting 'calculate_rotation_matrix' \n";
+   {
+      float rotation_mat[4];
+      float rad = M_PI;
+      maths_ops::calculate_rotation_matrix(rad, rotation_mat);
+      std::cout << " angle = " << rad << " (rad), {";
+      std::cout << rotation_mat[0] << ", " << rotation_mat[1] << ", ";
+      std::cout << rotation_mat[2] << ", " << rotation_mat[3] << "}" << std::endl;
+   }
+   {
+      double rotation_mat[4];
+      double rad = 0.;
+      maths_ops::calculate_rotation_matrix(rad, rotation_mat);
+      std::cout << " angle = " << rad << " (rad), {";
+      std::cout << rotation_mat[0] << ", " << rotation_mat[1] << ", ";
+      std::cout << rotation_mat[2] << ", " << rotation_mat[3] << "}" << std::endl;
+   }
+   {
+      long double rotation_mat[4];
+      long double rad = M_PI / 2;
+      maths_ops::calculate_rotation_matrix(rad, rotation_mat);
+      std::cout << " angle = " << rad << " (rad), {";
+      std::cout << rotation_mat[0] << ", " << rotation_mat[1] << ", ";
+      std::cout << rotation_mat[2] << ", " << rotation_mat[3] << "}" << std::endl;
+   }
+
+   // --- translate_point ---
+   std::cout << "\nTesting 'translate_point' \n";
+   {
+      float x = 1.2f;
+      float y = 4.f;
+      float dx = 2.f;
+      float dy = 6.f;
+      std::cout << "(" << x << ", " << y << ") move by (" << dx << ", " << dy << ") = (";
+      maths_ops::translate_point(&x, &y, dx, dy);
+      std::cout << x << ", " << y << ")" << std::endl; 
+   }
+   {
+      double x = -3.;
+      double y = 61.;
+      double dx = 0.4;
+      double dy = -2.1;
+      std::cout << "(" << x << ", " << y << ") move by (" << dx << ", " << dy << ") = (";
+      maths_ops::translate_point(&x, &y, dx, dy);
+      std::cout << x << ", " << y << ")" << std::endl; 
+   }
+   {
+      long double x = 0.L;
+      long double y = 999.L;
+      long double dx = 0.001L;
+      long double dy = -6655.001;
+      std::cout << "(" << x << ", " << y << ") move by (" << dx << ", " << dy << ") = (";
+      maths_ops::translate_point(&x, &y, dx, dy);
+      std::cout << x << ", " << y << ")" << std::endl; 
+   }
+
+   // --- rotate_point ---
+   std::cout << "\nTesting 'rotate_point' \n";
+   {
+      float rad = 0.f;
+      float rotation_mat[4];
+      maths_ops::calculate_rotation_matrix(rad, rotation_mat);
+
+      double x = 1.;
+      double y = 1.;
+      std::cout << " Angle = " << maths_ops::rad_to_deg(rad) << " (deg), (" << x << ", " << y << ") => ";
+      maths_ops::rotate_point(&x, &y, rotation_mat);
+      std::cout << "(" << x << ", " << y << ")" << std::endl;
+   }
+   {
+      long double rad = M_PI;
+      long double rotation_mat[4];
+      maths_ops::calculate_rotation_matrix(rad, rotation_mat);
+
+      long double x = 1.L;
+      long double y = 1.L;
+      std::cout << " Angle = " << maths_ops::rad_to_deg(rad) << " (deg), (" << x << ", " << y << ") => ";
+      maths_ops::rotate_point(&x, &y, rotation_mat);
+      std::cout << "(" << x << ", " << y << ")" << std::endl;
+   }
+
+   // --- rotate_point_about ---
+   {
+      // TODO
+   }
+
+   // --- dot_product ---
+   {
+      // TODO
+   }
+
+   // --- cross_product ---
+   {
+      // TODO
+   }
+
+   // --- set_affine_geotransform ---
+   {
+      // TODO
+   }
+
+   // --- decrypt_affine_geotransform ---
+   {
+      // TODO
+   }
+
+   // --- apply_geotransform ---
+   {
+      // TODO
+   }
+
+   // --- apply_inverse_geotransform ---
+   {
+      // TODO
+   }
+
 
 
 
