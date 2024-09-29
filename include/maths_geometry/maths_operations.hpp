@@ -264,35 +264,89 @@ namespace maths_ops
       return get_0_2pi_rad(r);
    }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR T convert_to_meteorological_dir_deg(T d)
-   // {
-   //    d += 180;
-   //    return get_0_360_deg(d);
-   // }
+   /**
+    * @brief Converts an angle of a vector in degrees to follow the meteorological convention.
+    * That is 0 deg = North - up. A positive angle rotates clockwise. 
+    * Angle indicates the point of origin
+    * 
+    * @tparam T Supports float, double and long double.
+    * @param r [in] Angle in degrees.
+    * @return Angle converted to the meteorological convention.
+    */
+   template <typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<
+      std::is_same<T, float>::value || 
+      std::is_same<T, double>::value ||
+      std::is_same<T, long double>::value, T>::type
+   convert_to_meteorological_dir_deg(T d)
+   {
+      d += 180;
+      return get_0_360_deg(d);
+   }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR T convert_to_meteorological_dir_rad(T r)
-   // {
-   //    r += M_PI;
-   //    return get_0_2pi_rad(r);
-   // }
+   /**
+    * @brief Converts an angle of a vector in radians to follow the meteorological convention.
+    * That is 0 rad = North - up. A positive angle rotates clockwise. 
+    * Angle indicates the point of origin
+    * 
+    * @tparam T Supports float, double and long double.
+    * @param r [in] Angle in radians.
+    * @return Angle converted to the meteorological convention.
+    */
+   template <typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<
+      std::is_same<T, float>::value || 
+      std::is_same<T, double>::value ||
+      std::is_same<T, long double>::value, T>::type
+   convert_to_meteorological_dir_rad(T r)
+   {
+      r += M_PI;
+      return get_0_2pi_rad(r);
+   }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR T vector_magnitude(const T x, const T y)
-   // {
-   //    return sqrt(x * x + y * y);
-   // }
+   /**
+    * @brief Calculates the magnitude of a (euclidean) vector.
+    * 
+    * It does not perform any sanity checks on the input values.
+    * 
+    * @tparam T Supports float, double and long double.
+    * @param x [in] The x-component of the vector.
+    * @param y [in] The y-component of the vector.
+    * @return Vector magnitude.
+    */
+   template <typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<
+      std::is_same<T, float>::value || 
+      std::is_same<T, double>::value ||
+      std::is_same<T, long double>::value, T>::type
+   vector_magnitude(const T x, const T y)
+   {
+      return std::sqrt(x * x + y * y);
+   }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR T vector_direction(const T x, const T y)
-   // {
-   //    return atan2(y, x);
-   // }
+   /**
+    * @brief Calculates the direction of a (euclidean) vector.
+    * 
+    * It does not perform any sanity checks on the input values.
+    * 
+    * @tparam T Supports float, double and long double.
+    * @param x [in] The x-component of the vector.
+    * @param y [in] The y-component of the vector.
+    * @return Vector direction in radians.
+    */
+   template <typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<
+      std::is_same<T, float>::value || 
+      std::is_same<T, double>::value ||
+      std::is_same<T, long double>::value, T>::type
+   vector_direction(const T x, const T y)
+   {
+      return atan2(y, x);
+   }
 
    // //##################################################################
    // template <typename T>

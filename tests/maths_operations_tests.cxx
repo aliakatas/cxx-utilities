@@ -5,6 +5,7 @@
 int main()
 {
    // --- get_row_major_linear_index ---
+   std::cout << "\nTesting 'get_row_major_linear_index' \n";
    {
       int ncols = 16;
       int irow = 5;
@@ -50,6 +51,7 @@ int main()
    }
 
    // --- get_column_major_linear_index ---
+   std::cout << "\nTesting 'get_column_major_linear_index' \n";
    {
       int nrows = 16;
       int irow = 5;
@@ -95,6 +97,7 @@ int main()
    }
 
    // --- get_2D_indices_from_row_major_linear_index ---
+   std::cout << "\nTesting 'get_2D_indices_from_row_major_linear_index' \n";
    {
       int ncols = 12;
       int irow = 0;
@@ -144,6 +147,7 @@ int main()
    }
 
    // --- get_2D_indices_from_column_major_linear_index ---
+   std::cout << "\nTesting 'get_2D_indices_from_column_major_linear_index' \n";
    {
       int nrows = 19;
       int irow = 0;
@@ -193,84 +197,90 @@ int main()
    }
 
    // --- are_equal ---
+   std::cout << "\nTesting 'are_equal' \n";
    {
       float a = 3.2f;
       float b = 3.200000001f;
-      std::cout << a << " == " << b << " ? " << maths_ops::are_equal(a, b);
+      std::cout << " " << a << " == " << b << " ? " << maths_ops::are_equal(a, b);
       std::cout << " with tolerance = " << std::numeric_limits<float>::epsilon() << std::endl;
    }
    
    {
       double a = 3.2;
       double b = 3.200000001;
-      std::cout << a << " == " << b << " ? " << maths_ops::are_equal(a, b);
+      std::cout << " " << a << " == " << b << " ? " << maths_ops::are_equal(a, b);
       std::cout << " with tolerance = " << std::numeric_limits<double>::epsilon() << std::endl;
    }
 
    {
       long double a = 3.2L;
       long double b = 3.200000001L;
-      std::cout << a << " == " << b << " ? " << maths_ops::are_equal(a, b);
+      std::cout << " " << a << " == " << b << " ? " << maths_ops::are_equal(a, b);
       std::cout << " with tolerance = " << std::numeric_limits<long double>::epsilon() << std::endl;
    }
 
    // --- deg_to_rad ---
+   std::cout << "\nTesting 'deg_to_rad' \n";
    {
       float deg = 180.f;
-      std::cout << deg << " deg = " << maths_ops::deg_to_rad(deg) << " rad" << std::endl;
+      std::cout << " " << deg << " deg = " << maths_ops::deg_to_rad(deg) << " rad" << std::endl;
    }
    {
       double deg = 90.;
-      std::cout << deg << " deg = " << maths_ops::deg_to_rad(deg) << " rad" << std::endl;
+      std::cout << " " << deg << " deg = " << maths_ops::deg_to_rad(deg) << " rad" << std::endl;
    }
    {
       long double deg = 270.L;
-      std::cout << deg << " deg = " << maths_ops::deg_to_rad(deg) << " rad" << std::endl;
+      std::cout << " " << deg << " deg = " << maths_ops::deg_to_rad(deg) << " rad" << std::endl;
    }
 
    // --- rad_to_deg ---
+   std::cout << "\nTesting 'rad_to_deg' \n";
    {
       float rad = M_PI;
-      std::cout << rad << " rad = " << maths_ops::rad_to_deg(rad) << " deg" << std::endl;
+      std::cout << " " << rad << " rad = " << maths_ops::rad_to_deg(rad) << " deg" << std::endl;
    }
    {
       double rad = 2 * M_PI;
-      std::cout << rad << " rad = " << maths_ops::rad_to_deg(rad) << " deg" << std::endl;
+      std::cout << " " << rad << " rad = " << maths_ops::rad_to_deg(rad) << " deg" << std::endl;
    }
    {
       long double rad = M_PI / 4;
-      std::cout << rad << " rad = " << maths_ops::rad_to_deg(rad) << " deg" << std::endl;
+      std::cout << " " << rad << " rad = " << maths_ops::rad_to_deg(rad) << " deg" << std::endl;
    }
 
    // --- get_0_360_deg ---
+   std::cout << "\nTesting 'get_0_360_deg' \n";
    {
       float deg = 540.f;
-      std::cout << deg << " deg = " << maths_ops::get_0_360_deg(deg) << " deg" << std::endl;
+      std::cout << " " << deg << " deg = " << maths_ops::get_0_360_deg(deg) << " deg" << std::endl;
    }
    {
       double deg = 363.;
-      std::cout << deg << " deg = " << maths_ops::get_0_360_deg(deg) << " deg" << std::endl;
+      std::cout << " " << deg << " deg = " << maths_ops::get_0_360_deg(deg) << " deg" << std::endl;
    }
    {
       long double deg = 801.L;
-      std::cout << deg << " deg = " << maths_ops::get_0_360_deg(deg) << " deg" << std::endl;
+      std::cout << " " << deg << " deg = " << maths_ops::get_0_360_deg(deg) << " deg" << std::endl;
    }
 
    // --- get_0_2pi_rad ---
+   std::cout << "\nTesting 'get_0_2pi_rad' \n";
    {
       float rad = 5 * M_PI;
-      std::cout << rad << " rad = " << maths_ops::get_0_2pi_rad(rad) << " rad" << std::endl;
+      std::cout << " " << rad << " rad = " << maths_ops::get_0_2pi_rad(rad) << " rad" << std::endl;
    }
    {
       double rad = 13.41;
-      std::cout << rad << " rad = " << maths_ops::get_0_2pi_rad(rad) << " rad" << std::endl;
+      std::cout << " " << rad << " rad = " << maths_ops::get_0_2pi_rad(rad) << " rad" << std::endl;
    }
    {
       long double rad = 2.25 * M_PI;
-      std::cout << rad << " rad = " << maths_ops::get_0_2pi_rad(rad) << " rad" << std::endl;
+      std::cout << " " << rad << " rad = " << maths_ops::get_0_2pi_rad(rad) << " rad" << std::endl;
    }
 
    // --- to_compass_angle_deg ---
+   std::cout << "\nTesting 'to_compass_angle_deg' \n";
    {
       float deg = 270.f;
       std::cout << " angle = " << deg << "(deg), compass = " << maths_ops::to_compass_angle_deg(deg) << " (deg)" <<std::endl;
@@ -285,6 +295,7 @@ int main()
    }
 
    // --- to_compass_angle_rad ---
+   std::cout << "\nTesting 'to_compass_angle_rad' \n";
    {
       float rad = (3./2.) * M_PI;
       std::cout << " angle = " << rad << "(rad), compass = " << maths_ops::to_compass_angle_rad(rad) << " (rad)" <<std::endl;
@@ -298,15 +309,75 @@ int main()
       std::cout << " angle = " << rad << "(rad), compass = " << maths_ops::to_compass_angle_rad(rad) << " (rad)" <<std::endl;
    }
 
+   // --- convert_to_meteorological_dir_deg ---
+   std::cout << "\nTesting 'convert_to_meteorological_dir_deg' \n";
+   {
+      long double deg = 45.L;
+      std::cout << " " << deg << " (geometric angle - deg) => " << maths_ops::convert_to_meteorological_dir_deg(deg) << " (meteo angle - deg)" << std::endl;
+   }
+   {
+      float deg = -270.f;
+      std::cout << " " << deg << " (geometric angle - deg) => " << maths_ops::convert_to_meteorological_dir_deg(deg) << " (meteo angle - deg)" << std::endl;
+   }
+
+   // --- convert_to_meteorological_dir_rad ---
+   std::cout << "\nTesting 'convert_to_meteorological_dir_rad' \n";
+   {
+      long double rad = 0.L;
+      std::cout << " " << rad << " (geometric angle - rad) => " << maths_ops::convert_to_meteorological_dir_rad(rad) << " (meteo angle - rad)" << std::endl;
+   }
+   {
+      float rad = -M_PI;
+      std::cout << " " << rad << " (geometric angle - rad) => " << maths_ops::convert_to_meteorological_dir_rad(rad) << " (meteo angle - rad)" << std::endl;
+   }
+
+   // --- vector_magnitude ---
+   std::cout << "\nTesting 'vector_magnitude' \n";
+   {
+      float x = 1.f;
+      float y = 1.f;
+      std::cout << " (" << x << ", " << y << ") = " << maths_ops::vector_magnitude(x, y) << std::endl; 
+   }
+   {
+      double x = 12.;
+      double y = 0.;
+      std::cout << " (" << x << ", " << y << ") = " << maths_ops::vector_magnitude(x, y) << std::endl; 
+   }
+   {
+      long double x = -3.L;
+      long double y = -4.L;
+      std::cout << " (" << x << ", " << y << ") = " << maths_ops::vector_magnitude(x, y) << std::endl; 
+   }
+
+   // --- vector_direction ---
+   std::cout << "\nTesting 'vector_direction' \n";
+   {
+      float x = 0.f;
+      float y = 0.f;
+      std::cout << " (" << x << ", " << y << ") = " << maths_ops::vector_direction(x, y);
+      std::cout << " (" << maths_ops::rad_to_deg(maths_ops::vector_direction(x, y)) << "deg)" << std::endl;
+   }
+   {
+      double x = -5.;
+      double y = 5.;
+      std::cout << " (" << x << ", " << y << ") = " << maths_ops::vector_direction(x, y);
+      std::cout << " (" << maths_ops::rad_to_deg(maths_ops::vector_direction(x, y)) << "deg)" << std::endl;
+   }
+   {
+      long double x = -1.L;
+      long double y = -3.L;
+      std::cout << " (" << x << ", " << y << ") = " << maths_ops::vector_direction(x, y);
+      std::cout << " (" << maths_ops::rad_to_deg(maths_ops::vector_direction(x, y)) << "deg)" << std::endl;
+   }
 
 
 
 
-   
 
 
 
    // --- interp_linear ---
+   std::cout << "\nTesting 'interp_linear' \n";
    {
       float x = 1.2f;
       float x0 = 1.f;
@@ -317,8 +388,6 @@ int main()
       std::cout << "(" << x0 << ", " << y0 << ") --> (" << x1 << ", " << y1 << ") = (" << x << ", " << y << ")" << std::endl;
    }
 
-
-
-
+   std::cout << "\nDone\n";
    return EXIT_SUCCESS;
 }
