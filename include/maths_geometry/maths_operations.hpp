@@ -17,7 +17,6 @@
 #endif
 
 #define ONE_EIGHTY_DEG           180.0
-#define DEFAULT_ZERO_THRESHOLD   0.00001
 
 namespace maths_ops 
 {
@@ -613,197 +612,226 @@ namespace maths_ops
       *icol = static_cast<index_t>(std::round(det_icol / det));
    }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR void unit_vector(T* unit_vec_x, T* unit_vec_y,
-   //    const T original_vec_x, const T original_vec_y, const T zero_theshold = DEFAULT_ZERO_THRESHOLD)
-   // {
-   //    T mag = vector_magnitude(original_vec_x, original_vec_y);
-   //    if (mag > zero_theshold) {
-   //       *unit_vec_x = original_vec_x / mag;
-   //       *unit_vec_y = original_vec_y / mag;
-   //    }
-   //    else {
-   //       *unit_vec_x = original_vec_x;
-   //       *unit_vec_y = original_vec_y;
-   //    }
-   // }
+   /**
+    * @brief Calculates the unit vector components of a 2D vector.
+    * 
+    * @tparam T Supports float, double, long double.
+    * @param unit_vec_x [out] x-component of the unit vector.
+    * @param unit_vec_y [out] y-component of the unit vector.
+    * @param original_vec_x [in] x-component of the 2D vector.
+    * @param original_vec_y [in] y-component of the 2D vector.
+    */
+   template <typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value, void>::type
+   unit_vector(T* unit_vec_x, T* unit_vec_y,
+      const T original_vec_x, const T original_vec_y)
+   {
+      constexpr T zero_theshold = std::numeric_limits<T>::epsilon();
+      constexpr T mag = vector_magnitude(original_vec_x, original_vec_y);
+      if (mag > zero_theshold) {
+         *unit_vec_x = original_vec_x / mag;
+         *unit_vec_y = original_vec_y / mag;
+      }
+      else {
+         *unit_vec_x = original_vec_x;
+         *unit_vec_y = original_vec_y;
+      }
+   }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR T parallel_vector_component(
-   //    const T vec_x, const T vec_y,
-   //    const T ref_line_start_x, const T ref_line_start_y,
-   //    const T ref_line_end_x, const T ref_line_end_y,
-   //    const T zero_theshold = DEFAULT_ZERO_THRESHOLD)
-   // {
-   //    T line_vec_x = ref_line_end_x - ref_line_start_x;
-   //    T line_vec_y = ref_line_end_y - ref_line_start_y;
-   //    T unit_vec_x = 0., unit_vec_y = 0.;
-   //    unit_vector(&unit_vec_x, &unit_vec_y, line_vec_x, line_vec_y, zero_theshold);
+   /**
+    * @brief Calculates the component of a vector that 
+    * is parallel to a given line segment.
+    * 
+    * @tparam T Supports float, double, long double.
+    * @param vec_x [in] x-component of the input vector.
+    * @param vec_y [in] y-component of the input vector.
+    * @param ref_line_start_x [in] x-coordinate of the starting point of the line segment.
+    * @param ref_line_start_y [in] y-coordinate of the starting point of the line segment.
+    * @param ref_line_end_x [in] x-coordinate of the ending point of the line segment.
+    * @param ref_line_end_y [in] y-coordinate of the ending point of the line segment.
+    * @return Vector component parallel to the line segment.
+    */
+   template <typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
+   parallel_vector_component(
+      const T vec_x, const T vec_y,
+      const T ref_line_start_x, const T ref_line_start_y,
+      const T ref_line_end_x, const T ref_line_end_y)
+   {
+      T line_vec_x = ref_line_end_x - ref_line_start_x;
+      T line_vec_y = ref_line_end_y - ref_line_start_y;
+      T unit_vec_x = static_cast<T>(0), unit_vec_y = static_cast<T>(0);
+      unit_vector(&unit_vec_x, &unit_vec_y, line_vec_x, line_vec_y);
 
-   //    return dot_product(vec_x, vec_y, unit_vec_x, unit_vec_y);
-   // }
+      return dot_product(vec_x, vec_y, unit_vec_x, unit_vec_y);
+   }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR T perpendicular_vector_component(
-   //    const T vec_x, const T vec_y,
-   //    const T ref_line_start_x, const T ref_line_start_y,
-   //    const T ref_line_end_x, const T ref_line_end_y,
-   //    const T zero_theshold = DEFAULT_ZERO_THRESHOLD)
-   // {
-   //    T line_vec_x = ref_line_end_x - ref_line_start_x;
-   //    T line_vec_y = ref_line_end_y - ref_line_start_y;
-   //    T unit_vec_x = 0., unit_vec_y = 0.;
-   //    unit_vector(&unit_vec_x, &unit_vec_y, line_vec_x, line_vec_y, zero_theshold);
+   /**
+    * @brief Calculates the component of a vector that 
+    * is perpendicular (normaL) to a given line segment.
+    * 
+    * @tparam T Supports float, double, long double.
+    * @param vec_x [in] x-component of the input vector.
+    * @param vec_y [in] y-component of the input vector.
+    * @param ref_line_start_x [in] x-coordinate of the starting point of the line segment.
+    * @param ref_line_start_y [in] y-coordinate of the starting point of the line segment.
+    * @param ref_line_end_x [in] x-coordinate of the ending point of the line segment.
+    * @param ref_line_end_y [in] y-coordinate of the ending point of the line segment.
+    * @return Vector component perpendicular to the line segment.
+    */
+   template <typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
+   perpendicular_vector_component(
+      const T vec_x, const T vec_y,
+      const T ref_line_start_x, const T ref_line_start_y,
+      const T ref_line_end_x, const T ref_line_end_y)
+   {
+      T line_vec_x = ref_line_end_x - ref_line_start_x;
+      T line_vec_y = ref_line_end_y - ref_line_start_y;
+      T unit_vec_x = static_cast<T>(0), unit_vec_y = static_cast<T>(0);
+      unit_vector(&unit_vec_x, &unit_vec_y, line_vec_x, line_vec_y);
 
-   //    return cross_product(unit_vec_x, unit_vec_y, vec_x, vec_y);
-   // }
+      return cross_product(unit_vec_x, unit_vec_y, vec_x, vec_y);
+   }
 
+   /**
+    * @brief Calculates a term of the Shoelace formula.
+    * https://en.wikipedia.org/wiki/Shoelace_formula
+    * 
+    * @tparam T Supports float, double, long double.
+    * @param x1 [in] x-coordinate of first point.
+    * @param y1 [in] y-coordinate of first point.
+    * @param x2 [in] x-coordinate of second point.
+    * @param y2 [in] y-coordinate of second point.
+    * @return Value of the term.
+    */
+   template <typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
+   shoelace_term(T x1, T y1, T x2, T y2)
+   {
+      return cross_product(x1, y1, x2, y2);
+   }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR T shoelace_term(T x1, T y1, T x2, T y2)
-   // {
-   //    return cross_product(x1, y1, x2, y2);
-   // }
+   /**
+    * @brief Calculates the coefficients A, B, C of the generalised
+    * line equation given two points in 2D.
+    * Eqn: Ax + By + C = 0
+    * 
+    * @tparam T Supports float, double, long double.
+    * @param x1 [in] x-coordinate of first point.
+    * @param y1 [in] y-coordinate of first point.
+    * @param x2 [in] x-coordinate of second point.
+    * @param y2 [in] y-coordinate of second point.
+    * @param a [out] Value of coefficient A.
+    * @param b [out] Value of coefficient B.
+    * @param c [out] Value of coefficient C.
+    */
+   template <typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value, void>::type 
+   get_generalised_line_eqn_coeff(T x1, T y1, T x2, T y2, T* a, T* b, T* c)
+   {
+      *a = y1 - y2;
+      *b = x2 - x1;
+      *c = x1 * y2 - x2 * y1;
+   }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR void get_line_coeff(T x1, T y1, T x2, T y2, T* a, T* b, T* c)
-   // {
-   //    *a = y1 - y2;
-   //    *b = x2 - x1;
-   //    *c = x1 * y2 - x2 * y1;
-   // }
+   /**
+    * @brief Calculates the distance (normal) of a point 
+    * to a line in 2D space.
+    * 
+    * @tparam T Supports float, double, long double.
+    * @param x1 [in] x-coordinate of the first point on the line segment.
+    * @param y1 [in] y-coordinate of the first point on the line segment.
+    * @param x2 [in] x-coordinate of the second point on the line segment.
+    * @param y2 [in] y-coordinate of the second point on the line segment.
+    * @param xp [in] x-coordinate of the point.
+    * @param yp [in] y-coordinate of the point.
+    * @return The distance from the point to the line segment.
+    */
+   template <typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type 
+   distance_point_to_line(T x1, T y1, T x2, T y2, T xp, T yp)
+   {
+      T a, b, c;
+      get_line_coeff(x1, y1, x2, y2, &a, &b, &c);
+      return std::abs(a * xp + b * yp + c) / std::sqrt(a * a + b * b);
+   }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR T distance_point_to_line(T x1, T y1, T x2, T y2, T xp, T yp)
-   // {
-   //    T a, b, c;
-   //    get_line_coeff(x1, y1, x2, y2, &a, &b, &c);
-   //    return fabs(a * xp + b * yp + c) / sqrt(a * a + b * b);
-   // }
+   /**
+    * @brief Checks whether a point is on the left 
+    * of a directed (signed) line segment using the 
+    * outer product of the vectors defined by (1) the
+    * line segment and (2) the starting point of the 
+    * line segment and the test point.
+    * 
+    * @tparam T Supports float, double, long double.
+    * @param xstart [in] x-coordinate of the starting point of the line segment.
+    * @param ystart [in] y-coordinate of the starting point of the line segment.
+    * @param xend [in] x-coordinate of the ending point of the line segment.
+    * @param yend [in] y-coordinate of the ending point of the line segment.
+    * @param xp [in] x-coordinate of the point to test.
+    * @param yp [in] y-coordinate of the point to test.
+    * @return 1 if point is on the left, 0 otherwise.
+    */
+   template <typename T>
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value, int>::type 
+   is_point_to_left_of_line_segment(T xstart, T ystart, T xend, T yend, T xp, T yp)
+   {
+      return (xend - xstart) * (yp - ystart) - (yend - ystart) * (xp - xstart) > 0 ? 1 : 0;
+   }
 
-   // //##################################################################
-   // template <typename T>
-   // HOSTDEVDECOR int is_point_to_left_of_line_segment(T xstart, T ystart, T xend, T yend, T xp, T yp)
-   // {
-   //    return (xend - xstart) * (yp - ystart) - (yend - ystart) * (xp - xstart) > 0 ? 1 : 0;
-   // }
+   /**
+   * @brief Calculates the coefficients of the equation 
+   * of a line given points p and q in the slope-intercept 
+   * form: y = m * x + b.
+   * 
+   * @tparam T Supports float, double, long double.
+   * @param m [out] Slope of the line.
+   * @param b [out] y-intersept constant of the line.
+   * @param px [in] x coordinate of the line's starting point.
+   * @param py [in] y coordinate of the line's starting point.
+   * @param qx [in] x coordinate of the line's ending point.
+   * @param qy [in] y coordinate of the line's ending point.
+   */
+   template <typename T> 
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value, void>::type 
+   get_line_equation_intercept(T* m, T* b, T px, T py, T qx, T qy)
+   {
+      *m = (qy - py) / (qx - px);
+      *b = py - (*m) * px;
+   };
 
-   // //##################################################################
-   // template<typename real_t>
-   // HOSTDEVDECOR real_t chezy_to_manning(const real_t chezy_roughness, const real_t water_depth, const real_t minimum_depth)
-   // {
-   //    real_t d = water_depth > minimum_depth ? water_depth : minimum_depth; // std::max(water_depth, minimum_depth);
-   //    return std::pow(d, 1.0 / 6.0) / chezy_roughness;
-   // }
-
-   // /**
-   // * @brief Calculates the equation of the given line pq in the slope-intersept form: y = mx + b.
-   // * 
-   // * @param m [out] Slope of the line.
-   // * @param b [out] y-intersept constant of the line.
-   // * @param px [in] x coordinate of the line's start point.
-   // * @param py [in] y coordinate of the line's start point.
-   // * @param qx [in] x coordinate of the line's end point.
-   // * @param qy [in] y coordinate of the line's end point.
-   // */
-   // template <typename T> 
-   // HOSTDEVDECOR void get_line_equation_intercept(T* m, T* b, T px, T py, T qx, T qy)
-   // {
-   //    *m = (qy - py) / (qx - px);
-   //    *b = py - (*m) * px;
-   // };
-
-   // /**
-   // * @brief Calculates the equation of the given line pq in the standard form: Ax + By + C = 0.
-   // *
-   // * @param A [out] Coefficient of the x coordinate of the equation.
-   // * @param B [out] Coefficient of the y coordinate of the equation.
-   // * @param C [out] Constant coefficient  of the equation.
-   // * @param px [in] x coordinate of the line's start point.
-   // * @param py [in] y coordinate of the line's start point.
-   // * @param qx [in] x coordinate of the line's end point.
-   // * @param qy [in] y coordinate of the line's end point.
-   // */
-   // template <typename T> 
-   // HOSTDEVDECOR void get_line_equation_standard(T* A, T* B, T* C, T px, T py, T qx, T qy) 
-   // {
-   //    *A = qy - py;
-   //    *B = px - qx;
-   //   //*C = py * (qx - px) - px * (qy - py);
-   //    *C = py * (-1.0) * (*B) - px * (1.0) * (*A);
-   // };
-
-   // /**
-   // * @brief Finds the coordinates of an offset point 'a' from an intersection point 'o' of a line 'pq'.
-   // * 
-   // * Lines 'ao' and 'pq' are perpendicular.
-   // * The width of the segment 'ao' is given.
-   // * 
-   // * @param ax [out] The x coordinate of the offset point.
-   // * @param ay [out] The y coordinate of the offset point.
-   // * @param ox [in] The x coordinate of the intersection point 'o'.
-   // * @param oy [in] The y coordinate of the intersection point 'o'.
-   // * @param distance [in] The offset distance of point 'a' from point 'o'.
-   // * @param px [in] x coordinate of the start point of line 'pq'.
-   // * @param py [in] y coordinate of the start point of line 'pq'.
-   // * @param qx [in] x coordinate of the end point of line 'pq'.
-   // * @param qy [in] y coordinate of the end point of line 'pq'.
-   // */
-   // template <typename T> 
-   // HOSTDEVDECOR void offset_point_from_segment(T* ax, T* ay, T ox, T oy, T distance, T px, T py, T qx, T qy)
-   // {
-   //    T A = 0.0, B = 0.0, C = 0.0;
-   //    math_ops::get_line_equation_standard(&A, &B, &C, px, py, qx, qy);
-   //    // normal
-   //    double nx = -A;
-   //    double ny = +B;
-   //    // unit normal
-   //    double nn = sqrt(nx * nx + ny * ny);
-   //    nx = nx / nn;
-   //    ny = ny / nn;
-   //    // a = o + d n
-   //    *ax = ox + nx * distance;
-   //    *ay = oy + ny * distance;
-   // };
-
-   // /**
-   // * @brief Calculates the acute angle between two linear segments pq and ab.
-   // * 
-   // * @param px [in] x coordinate of the start point of the segment pq.
-   // * @param py [in] y coordinate of the start point of the segment pq.
-   // * @param qx [in] x coordinate of the end point of the segment pq.
-   // * @param qy [in] y coordinate of the end point of the segment pq.
-   // * @param ax [in] x coordinate of the start point of the segment ab.
-   // * @param ay [in] y coordinate of the start point of the segment ab.
-   // * @param bx [in] x coordinate of the end point of the segment ab.
-   // * @param by [in] y coordinate of the end point of the segment ab.
-   // * @param inrad [in] When set as true angle is returned in rad (default), otherwise the angle is returned in degrees.
-   // * @return The angle between two segments pq and ab in rad or degrees.
-   // */
-   // template <typename T> 
-   // HOSTDEVDECOR T angle_between_segments(T px, T py, T qx, T qy, T ax, T ay, T bx, T by, bool inrad = true)
-   // {
-   //    T c_1 = 0.0;
-   //    T m_1 = 0.0;
-   //    math_ops::get_line_equation_intersept(&m_1, &c_1, px, py, qx, qy);
-   //    T c_2 = 0.0;
-   //    T m_2 = 0.0;
-   //    math_ops::get_line_equation_intersept(&m_2, &c_2, ax, ay, bx, by);
-
-   //    T tantheta = (m_1 - m_2) / (1 + m_1 * m_2);
-   //    T theta_inrad = atan((double)tantheta);
-
-   //    if (inrad)
-   //       return theta_inrad;
-   //    else
-   //       return math_ops::rad_to_deg(theta_inrad);
-   // }
+   /**
+   * @brief Calculates the coefficients of the equation 
+   * of a line given points p and q in the standard form: 
+   * Ax + By + C = 0.
+   *
+   * @tparam T Supports float, double, long double.
+   * @param A [out] Coefficient of the x coordinate of the equation.
+   * @param B [out] Coefficient of the y coordinate of the equation.
+   * @param C [out] Constant coefficient  of the equation.
+   * @param px [in] x coordinate of the line's starting point.
+   * @param py [in] y coordinate of the line's starting point.
+   * @param qx [in] x coordinate of the line's ending point.
+   * @param qy [in] y coordinate of the line's ending point.
+   */
+   template <typename T> 
+   HOSTDEVDECOR 
+   typename std::enable_if<std::is_floating_point<T>::value, void>::type 
+   get_line_equation_standard(T* A, T* B, T* C, T px, T py, T qx, T qy) 
+   {
+      *A = qy - py;
+      *B = px - qx;
+      *C = -((*A) * px + (*B) * py);
+   };
 
    /**
     * @brief Implements a linear interpolation in 1D.

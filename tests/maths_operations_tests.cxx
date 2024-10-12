@@ -1,9 +1,28 @@
 #include "maths_geometry/maths_operations.hpp"
 
 #include <iostream>
+#include <iomanip>
+
+#define LONG_DECIMAL_NUMBER   0.12345678901234567890123456789L
 
 int main()
 {
+   // --- General test for numerical precision ---
+   {
+      auto init_precision = std::cout.precision();
+
+      float long_decimal_num_f = static_cast<float>(LONG_DECIMAL_NUMBER);
+      double long_decimal_num_d = static_cast<double>(LONG_DECIMAL_NUMBER);
+      long double long_decimal_num_ld = static_cast<long double>(LONG_DECIMAL_NUMBER);
+
+      std::cout << std::setprecision(30);
+      std::cout << "       sizeof(float) = " << sizeof(float) << " :: " << long_decimal_num_f << std::endl;
+      std::cout << "      sizeof(double) = " << sizeof(double) << " :: " << long_decimal_num_d << std::endl;
+      std::cout << " sizeof(long double) = " << sizeof(long double) << " :: " << long_decimal_num_ld << std::endl;
+
+      std::cout << std::setprecision(init_precision);
+   }
+
    // --- get_row_major_linear_index ---
    std::cout << "\nTesting 'get_row_major_linear_index' \n";
    {
@@ -475,8 +494,34 @@ int main()
    }
 
    // --- rotate_point_about ---
+   std::cout << "\nTesting 'rotate_point_about' \n";
    {
-      // TODO
+      float rad = 0.f;
+      float rotation_mat[4];
+      maths_ops::calculate_rotation_matrix(rad, rotation_mat);
+
+      double xref = 1.;
+      double yref = 1.;
+      double x = 1.;
+      double y = 1.;
+      std::cout << " Angle = " << maths_ops::rad_to_deg(rad) << " (deg), (" << x << ", " << y << ") about ("; 
+      std::cout << xref << ", " << yref << ") => ";
+      maths_ops::rotate_point_about(&x, &y, rotation_mat, xref, yref);
+      std::cout << "(" << x << ", " << y << ")" << std::endl;
+   }
+   {
+      long double rad = M_PI;
+      long double rotation_mat[4];
+      maths_ops::calculate_rotation_matrix(rad, rotation_mat);
+
+      long double xref = 1.;
+      long double yref = 1.;
+      long double x = 2.;
+      long double y = 2.;
+      std::cout << " Angle = " << maths_ops::rad_to_deg(rad) << " (deg), (" << x << ", " << y << ") about ("; 
+      std::cout << xref << ", " << yref << ") => ";
+      maths_ops::rotate_point_about(&x, &y, rotation_mat, xref, yref);
+      std::cout << "(" << x << ", " << y << ")" << std::endl;
    }
 
    // --- dot_product ---
@@ -509,11 +554,50 @@ int main()
       // TODO
    }
 
+   // --- unit_vector ---
+   {
+      // TODO
+   }
 
+   // --- parallel_vector_component ---
+   {
+      // TODO
+   }
 
+   // --- perpendicular_vector_component ---
+   {
+      // TODO
+   }
 
+   // --- shoelace_term ---
+   {
+      // TODO
+   }
+   
+   // --- get_generalised_line_eqn_coeff ---
+   {
+      // TODO
+   }
 
+   // --- distance_point_to_line ---
+   {
+      // TODO
+   }
 
+   // --- is_point_to_left_of_line_segment ---
+   {
+      // TODO
+   }
+
+   // --- get_line_equation_intercept ---
+   {
+      // TODO
+   }
+   
+   // --- get_line_equation_standard ---
+   {
+      // TODO
+   }
 
    // --- interp_linear ---
    std::cout << "\nTesting 'interp_linear' \n";
