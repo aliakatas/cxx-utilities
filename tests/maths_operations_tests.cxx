@@ -1,4 +1,5 @@
 #include "maths_geometry/maths_operations.hpp"
+#include "maths_geometry/machine_numerical_precision.hpp"
 
 #include <iostream>
 #include <iomanip>
@@ -19,6 +20,10 @@ int main()
       std::cout << "       sizeof(float) = " << sizeof(float) << " :: " << long_decimal_num_f << std::endl;
       std::cout << "      sizeof(double) = " << sizeof(double) << " :: " << long_decimal_num_d << std::endl;
       std::cout << " sizeof(long double) = " << sizeof(long double) << " :: " << long_decimal_num_ld << std::endl;
+
+      std::cout << "      Numercial precision float = " << get_machine_precision<float>() << std::endl;
+      std::cout << "     Numercial precision double = " << get_machine_precision<double>() << std::endl;
+      std::cout << "Numercial precision long double = " << get_machine_precision<long double>() << std::endl;
 
       std::cout << std::setprecision(init_precision);
    }

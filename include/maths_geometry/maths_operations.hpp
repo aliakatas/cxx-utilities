@@ -1,5 +1,5 @@
-#ifndef MATHS_OPERATIONS_H
-#define MATHS_OPERATIONS_H
+#ifndef MATHS_OPERATIONS_HPP
+#define MATHS_OPERATIONS_HPP
 
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
@@ -856,4 +856,4 @@ namespace maths_ops
    }
 }
 
-#endif // MATHS_OPERATIONS_H
+#endif // MATHS_OPERATIONS_HPP
