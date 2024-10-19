@@ -154,7 +154,7 @@ namespace maths_ops
     * 
     * Does not apply any limitations to the input or output values
     * 
-    * @tparam T supports float, double and long double
+    * @tparam T Supports float, double and long double.
     * @param r [in] Angle in radians.
     * @return Angle in degrees.
     */
