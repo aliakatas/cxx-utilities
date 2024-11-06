@@ -1,5 +1,4 @@
-#ifndef BUILD_VERSION_UTILS_H 
-#define BUILD_VERSION_UTILS_H  
+#pragma once
 
 #if __has_include("version_info.hpp")
 #include "version_info.hpp"
@@ -160,5 +159,3 @@ namespace build_info
       return version;
    }
 }
-
-#endif // BUILD_VERSION_UTILS_H

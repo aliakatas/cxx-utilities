@@ -1,5 +1,4 @@
-#ifndef MATHS_OPERATIONS_HPP
-#define MATHS_OPERATIONS_HPP
+#pragma once
 
 #ifndef _USE_MATH_DEFINES
 #define _USE_MATH_DEFINES
@@ -856,4 +855,3 @@ namespace maths_ops
    }
 }
 
-#endif // MATHS_OPERATIONS_HPP

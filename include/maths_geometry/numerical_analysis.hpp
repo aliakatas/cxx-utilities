@@ -1,5 +1,4 @@
-#ifndef NUMERICAL_ANALYSIS_HPP
-#define NUMERICAL_ANALYSIS_HPP
+#pragma once
 
 #ifdef __NVCC__
 #include <device_launch_parameters.h>
@@ -44,4 +43,4 @@ namespace numanalysis
 
 }
 
-#endif // NUMERICAL_ANALYSIS_HPP
+

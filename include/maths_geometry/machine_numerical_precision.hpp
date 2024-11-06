@@ -1,6 +1,4 @@
-#ifndef MACHINE_NUMERICAL_PRECISION_HPP
-#define MACHINE_NUMERICAL_PRECISION_HPP
-
+#pragma once
 #include <type_traits>
 
 /**
@@ -20,4 +18,3 @@ get_machine_precision()
     return e;
 }
 
-#endif // MACHINE_NUMERICAL_PRECISION_HPP

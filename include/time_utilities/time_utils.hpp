@@ -1,5 +1,4 @@
-#ifndef RUNTIME_UTILS_H
-#define RUNTIME_UTILS_H
+#pragma once
 
 #include <chrono>
 #include <string>
@@ -96,5 +95,3 @@ namespace timeutils
     }
 
 }
-
-#endif // RUNTIME_UTILS_H

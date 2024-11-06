@@ -1,5 +1,4 @@
-#ifndef STRING_UTILS_H
-#define STRING_UTILS_H
+#pragma once
 
 #include <algorithm>
 #include <string>
@@ -89,4 +88,3 @@ namespace strutils
     }
 }
 
-#endif // STRING_UTILS_H

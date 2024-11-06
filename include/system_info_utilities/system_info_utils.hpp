@@ -1,5 +1,4 @@
-#ifndef SYSTEM_INFO_UTILS_H
-#define SYSTEM_INFO_UTILS_H
+#pragma once
 
 #include "string_utilities/string_utils.hpp"
 
@@ -101,4 +100,3 @@ namespace sysinfoutils
     
 }
 
-#endif // SYSTEM_INFO_UTILS_H
