@@ -1,4 +1,4 @@
-#include "benign_exceptions/benign_exceptions.hpp"
+#include "custom_exceptions/benign_exceptions.hpp"
 
 BeningException::BeningException(const char* message) : m_message{ message } {}
 
