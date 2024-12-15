@@ -90,7 +90,7 @@ void AppLoggerWithChannels::addChannelSink(
     auto backend = boost::make_shared<sinks::text_file_backend>(
         keywords::file_name = filename,
         keywords::rotation_size = 10 * 1024 * 1024,
-        keywords::time_based_rotation = sinks::file::rotation_at_time_point(0, 0, 0),
+        keywords::time_based_rotation = sinks::file::rotation_at_time_point(0, 0, 0)
     );
 
     auto sink = boost::make_shared<sink_t>(backend);
