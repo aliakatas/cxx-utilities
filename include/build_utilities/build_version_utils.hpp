@@ -155,7 +155,9 @@ namespace build_info
          std::to_string(VERSION_PATCH) + "+" +
          std::to_string(BUILD_INDEX) + "." +
          std::string(REPO_INDEX);
-
+#ifdef _DEBUG
+      version += std::string("-DEBUG");
+#endif // _DEBUG
       return version;
    }
 }
