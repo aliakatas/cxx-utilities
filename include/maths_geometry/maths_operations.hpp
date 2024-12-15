@@ -127,7 +127,8 @@ namespace maths_ops
    template <typename T>
    HOSTDEVDECOR
    typename std::enable_if<std::is_floating_point<T>::value, bool>::type
-   are_equal(T a, T b, T epsilon = std::numeric_limits<T>::epsilon()) {
+   are_equal(T a, T b, T epsilon = std::numeric_limits<T>::epsilon()) 
+   {
       return std::fabs(a - b) < epsilon;
    }
 
@@ -853,5 +854,127 @@ namespace maths_ops
    {
       return y0 + (x - x0) * (y1 - y0) / (x1 - x0);
    }
+
+   /**
+    * @brief Implements logarithm for any base.
+    * 
+    * @tparam T Supports float, double and long double.
+    * @param x [in] The number of which to calculate the logarithm.
+    * @param base [in] The base of the logarithm.
+    * @return The logarithm value.
+    */
+   template <typename T>
+   HOSTDEVDECOR
+   typename std::enable_if<std::is_floating_point<T>::value, T>::type
+   logarithm(const T x, const T base)
+   {
+      return std::log10(x) / std::log10(base);
+   }
+
+   /**
+    * @brief Implements the Taylor series term of a function.
+    * 
+    * @tparam T Supports float, double and long double.
+    * @tparam index_t Supports int, long, long long, and size_t.
+    * @param start [in] The starting value of the independent coordinate.
+    * @param i [in] The number of steps to take.
+    * @param dt [in] The resolution of the independent coordinate.
+    * @param t [out] The value of the independent coordinate.
+    * @param y [inout] The value of the function after applying the Taylor term.
+    * @param func The function to calculate.
+    */
+   template <typename T, typename index_t>
+   HOSTDEVDECOR
+   typename std::enable_if<std::is_floating_point<T>::value && 
+      (std::is_same<index_t, int>::value || std::is_same<index_t, long>::value || 
+      std::is_same<index_t, long long>::value || std::is_same<index_t, size_t>::value), void>::type
+   taylor(const T start, const index_t i, const T dt, T& t, T& y, T (*func)(T, T)) 
+   {
+      t = start + i * dt;
+      y += dt * func(t, y);
+   }
+
+   /**
+    * @brief Calculates the integral of a function using 
+    * the Simpson's rule (https://en.wikipedia.org/wiki/Simpson%27s_rule).
+    * 
+    * @tparam T Supports float, double and long double.
+    * @tparam num_t Supports int, long, long long, and size_t.
+    * @param first [in] The starting value of the interval to calculate the integral for.
+    * @param last [in] The last value of the interval to calculate the integral for.
+    * @param npoints [in] The number of points to use for the integral.
+    * @param f The function to integrate.
+    * @return The value of the integral.
+    */
+   template <typename T, typename num_t>
+   HOSTDEVDECOR
+   typename std::enable_if<std::is_floating_point<T>::value && 
+      (std::is_same<num_t, int>::value || std::is_same<num_t, long>::value || 
+      std::is_same<num_t, long long>::value || std::is_same<num_t, size_t>::value), T>::type
+   simpson(const T first, const T last, const num_t npoints, T (*func)(T)) {
+      T h = (last - first) / npoints;
+      T integral = static_cast<T>(0.);
+
+      for (auto i = 0; i < npoints - 1; i += 2)
+         integral += func(first + h * i) + 4.f * f(first + h * (i + 1)) + f(first + h * (i + 2));
+
+      return h * integral / static_cast<T>(3.);
+   }
+
+   /**
+    * @brief Calculates the integral of a function using 
+    * the Newton-Cotes formula for Trapezoidal (https://en.wikipedia.org/wiki/Newton%E2%80%93Cotes_formulas).
+    * 
+    * @tparam T Supports float, double and long double.
+    * @param first [in] The starting value of the interval to calculate the integral for.
+    * @param last [in] The last value of the interval to calculate the integral for.
+    * @param npoints [in] The number of points to use for the integral.
+    * @param f The function to integrate.
+    * @return The value of the integral.
+    */
+   template <typename T, typename num_t>
+   HOSTDEVDECOR
+   typename std::enable_if<std::is_floating_point<T>::value && 
+      (std::is_same<num_t, int>::value || std::is_same<num_t, long>::value || 
+      std::is_same<num_t, long long>::value || std::is_same<num_t, size_t>::value), T>::type
+   newton_cotes(T first, T last, num_t npoints, T (*f)(T)) 
+   {
+      T h = (last - first) / npoints;
+      T integral = static_cast<T>(0.);
+
+      for (auto i = 0; i < npoints; ++i)
+         integral += f(first + i * h) + f(first + (i + 1) * h);
+
+      return h * integral / static_cast<T>(2.);
+   }
+
+   /**
+    * @brief Calculates the integral of a function using 
+    * the Newton-Cotes formula for Simpson's 3/8 (https://en.wikipedia.org/wiki/Newton%E2%80%93Cotes_formulas).
+    * 
+    * @tparam T Supports float, double and long double.
+    * @param first [in] The starting value of the interval to calculate the integral for.
+    * @param last [in] The last value of the interval to calculate the integral for.
+    * @param npoints [in] The number of points to use for the integral.
+    * @param f The function to integrate.
+    * @return The value of the integral.
+    */
+   template <typename T, typename num_t>
+   HOSTDEVDECOR
+   typename std::enable_if<std::is_floating_point<T>::value && 
+      (std::is_same<num_t, int>::value || std::is_same<num_t, long>::value || 
+      std::is_same<num_t, long long>::value || std::is_same<num_t, size_t>::value), T>::type
+   newton_cotes38f(T first, T last, num_t npoints, T (*f)(T)) 
+   {
+      T h = (last - first) / npoints;
+      T integral = static_cast<T>(0.);
+
+      for (auto i = 0; i < npoints - 2; i += 3)
+         integral += f(first + i * h) + 3.f * f(first + (i + 1) * h) + 3.f * f(first + (i + 2) * h) + f(first + (i + 3) * h);
+
+      return static_cast<T>(3.) * h * integral / static_cast<T>(8.);
+   }
+
+
 }
 
