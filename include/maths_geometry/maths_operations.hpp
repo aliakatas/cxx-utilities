@@ -926,6 +926,7 @@ namespace maths_ops
     * the Newton-Cotes formula for Trapezoidal (https://en.wikipedia.org/wiki/Newton%E2%80%93Cotes_formulas).
     * 
     * @tparam T Supports float, double and long double.
+    * @tparam num_t Supports int, long, long long, and size_t.
     * @param first [in] The starting value of the interval to calculate the integral for.
     * @param last [in] The last value of the interval to calculate the integral for.
     * @param npoints [in] The number of points to use for the integral.
@@ -953,6 +954,7 @@ namespace maths_ops
     * the Newton-Cotes formula for Simpson's 3/8 (https://en.wikipedia.org/wiki/Newton%E2%80%93Cotes_formulas).
     * 
     * @tparam T Supports float, double and long double.
+    * @tparam num_t Supports int, long, long long, and size_t.
     * @param first [in] The starting value of the interval to calculate the integral for.
     * @param last [in] The last value of the interval to calculate the integral for.
     * @param npoints [in] The number of points to use for the integral.
@@ -973,6 +975,39 @@ namespace maths_ops
          integral += f(first + i * h) + 3.f * f(first + (i + 1) * h) + 3.f * f(first + (i + 2) * h) + f(first + (i + 3) * h);
 
       return static_cast<T>(3.) * h * integral / static_cast<T>(8.);
+   }
+
+   /**
+    * @brief Calculates the integral of a function using 
+    * the Gauss-Chebysev method (https://en.wikipedia.org/wiki/Chebyshev%E2%80%93Gauss_quadrature) 
+    * 
+    * @tparam T Supports float, double and long double.
+    * @tparam num_t Supports int, long, long long, and size_t.
+    * @param first [in] The starting value of the interval to calculate the integral for.
+    * @param last [in] The last value of the interval to calculate the integral for.
+    * @param npoints [in] The number of points to use for the integral.
+    * @param f The function to integrate.
+    * @return The value of the integral.
+    */
+   template <typename T, typename num_t>
+   HOSTDEVDECOR
+   typename std::enable_if<std::is_floating_point<T>::value && 
+      (std::is_same<num_t, int>::value || std::is_same<num_t, long>::value || 
+      std::is_same<num_t, long long>::value || std::is_same<num_t, size_t>::value), T>::type 
+   gauss_chebyshev(T first, T last, num_t npoints, T (*f)(T)) 
+   {
+      T out{ 0 };
+      T x_i{ 0 };
+      T arg{ 0 };
+      T diff{ last - first };
+      T sum{ last + first };
+
+      for (auto i = 0; i <= npoints; ++i) {
+         arg = static_cast<T>(M_PI) * (2 * i + 1) / (2 * (npoints + 1));
+         x_i = -std::cos(arg);
+         out += std::sin(arg) * f(static_cast<T>(0.5) * diff * x_i + static_cast<T>(0.5) * sum);
+      }
+      return static_cast<T>(0.5) * diff * (static_cast<T>(M_PI) / (npoints + 1)) * out;
    }
 
 
