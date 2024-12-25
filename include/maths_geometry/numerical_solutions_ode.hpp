@@ -57,4 +57,30 @@ namespace num_ode
       y += dt * func(t + static_cast<T>(.5) * dt, y + static_cast<T>(.5) * dt * func(t, y));
    }
 
+   /**
+    * @brief Implements the Runge-Kutta (4th order) method-based term of a function.
+    * 
+    * @tparam T Supports float, double and long double.
+    * @tparam index_t Supports int, long, long long, and size_t.
+    * @param i [in] The number of steps to take.
+    * @param dt [in] The resolution of the independent coordinate.
+    * @param t [out] The value of the independent coordinate.
+    * @param y [inout] The value of the function after applying the Taylor term.
+    * @param func The function to calculate.
+    */
+   template <typename T, typename index_t>
+   HOSTDEVDECOR
+   typename std::enable_if<std::is_floating_point<T>::value && 
+      (std::is_same<index_t, int>::value || std::is_same<index_t, long>::value || 
+      std::is_same<index_t, long long>::value || std::is_same<index_t, size_t>::value), void>::type
+   runge_kutta_o4(T start, index_t i, T dt, T& t, T& y, T (*func)(T, T)) 
+   {
+      t = start + i * dt;
+      T k1 = func(t, y);
+      T k2 = func(t + static_cast<T>(.5) * dt, y + static_cast<T>(.5) * dt * k1);
+      T k3 = func(t + static_cast<T>(.5) * dt, y + static_cast<T>(.5) * dt * k2);
+      T k4 = func(t + dt, y + dt * k3);
+      y += (dt / static_cast<T>(6)) * (k1 + static_cast<T>(2) * k2 + static_cast<T>(2) * k3 + k4);
+   }
+
 }
