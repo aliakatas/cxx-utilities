@@ -5,12 +5,40 @@
 
 #include <string>
 #include <vector>
+#include <stdexcept>
+#include <memory>
 // #include <iostream>
 
 namespace applogger
 {
-   AppLogger* applogger = nullptr;
+   std::unique_ptr<AppLogger> applogger;
    std::vector<std::string> messages;
+   std::vector<std::string> channels;
+}
+
+void log_message_to_channel(const AppLogger::Severity& severityVal, const std::string& channel, const std::string& message)
+{
+   switch (severityVal)
+   {
+   case AppLogger::Severity::Debug:
+      applogger::applogger->debug(channel, message);
+      break;
+   case AppLogger::Severity::Info:
+      applogger::applogger->info(channel, message);
+      break;
+   case AppLogger::Severity::Warning:
+      applogger::applogger->warning(channel, message);
+      break;
+   case AppLogger::Severity::Error:
+      applogger::applogger->error(channel, message);
+      break;
+   case AppLogger::Severity::Critical:
+      applogger::applogger->critical(channel, message);
+      break;
+   default:
+      // do nothing
+      break;
+   }
 }
 
 #if __cplusplus
@@ -103,6 +131,105 @@ extern "C" {
       *err = APPLOGGER_EXIT_SUCCESS;
    }
 
+   //====================================================================
+   DllExport void initialise_applogger(int* err)
+   {
+      try
+      {
+         applogger::applogger = std::make_unique<AppLogger>();
+         
+         applogger::applogger->init();
+      }
+      catch(const std::exception& e)
+      {
+         applogger::messages.push_back(e.what());
+         *err = APPLOGGER_EXIT_ERROR;
+         return;
+      }
+      
+      *err = APPLOGGER_EXIT_SUCCESS;
+   }
+
+   //====================================================================
+   DllExport void add_sink_to_applogger(const char* sinkname, 
+      const char* channel, const char* format, const char* minseverity, int* err)
+   {
+      try
+      {
+         *err = APPLOGGER_EXIT_SUCCESS;
+         if (!applogger::applogger)
+         {
+            throw std::runtime_error(std::string(__FUNCTION__) + std::string(": logger is not initialised yet!"));
+         }
+
+         AppLogger::Severity severity = AppLogger::Severity::Info;
+         try
+         {
+            if (minseverity)
+               severity = AppLogger::severityFromString(std::string(minseverity));
+         }
+         catch(const std::exception& e)
+         {
+            applogger::messages.push_back(e.what());
+            applogger::messages.push_back("Using default value of 'Info'");
+            *err = APPLOGGER_EXIT_WITH_MESSAGES;
+         }
+         
+         if (format)
+            applogger::applogger->addChannelSinkWithFormat(std::string(channel), std::string(sinkname), severity, std::string(format));
+         else 
+            applogger::applogger->addChannelSink(std::string(channel), std::string(sinkname), severity);
+
+         applogger::channels.push_back(channel);
+      }
+      catch(const std::exception& e)
+      {
+         applogger::messages.push_back(e.what());
+         *err = APPLOGGER_EXIT_ERROR;
+         return;
+      }
+   }
+
+   //====================================================================
+   DllExport void send_message_to_applogger(const char* channel, const char* severity, const char* message, int*err)
+   {
+      try
+      {
+         *err = APPLOGGER_EXIT_SUCCESS;
+         if (!applogger::applogger)
+         {
+            throw std::runtime_error(std::string(__FUNCTION__) + std::string(": logger is not initialised yet!"));
+         }
+
+         AppLogger::Severity severityVal = AppLogger::Severity::Info;
+         try
+         {
+            if (severity)
+               severityVal = AppLogger::severityFromString(std::string(severity));
+         }
+         catch(const std::exception& e)
+         {
+            applogger::messages.push_back(e.what());
+            applogger::messages.push_back("Using default value of 'Info'");
+            *err = APPLOGGER_EXIT_WITH_MESSAGES;
+         }
+
+         // TODO: convert channel memory to set so that we can run a quick validity check before proceeding!
+         if (channel)
+            log_message_to_channel(severityVal, std::string(channel), std::string(message));
+         else
+         {
+            for (auto& c : applogger::channels)
+               log_message_to_channel(severityVal, c, std::string(message));
+         }
+      }
+      catch(const std::exception& e)
+      {
+         applogger::messages.push_back(e.what());
+         *err = APPLOGGER_EXIT_ERROR;
+         return;
+      }
+   }
 
 #if __cplusplus
 }

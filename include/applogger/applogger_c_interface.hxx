@@ -41,19 +41,29 @@ extern "C" {
     * 
     * @param err [out] Returns 0 on success, -1 on error and 1 in case of success with messages.
     */
-   //DllExport void initialise_applogger(int* err);
+   DllExport void initialise_applogger(int* err);
 
    /**
     * @brief Adds a sink (file or stream) to the logger.
     * 
-    * @param sinkname [in]
-    * @param channel 
-    * @param format 
-    * @param err 
-    * @return DllExport 
+    * @param sinkname [in] The path and file name for the log.
+    * @param channel [in] The name of the channel associated with the sink (log file).
+    * @param format [in] Custom format of the error messages for this sink/channel.
+    * @param minseverity [in] The minimum level of severity of a message to appear in this log. Valid values are [Debug, Info, Warning, Error, Critical] (not case-sensitive). It can be NULL and it defaults to Info.
+    * @param err [out] Returns 0 on success, -1 on error and 1 in case of success with messages.
     */
-   //DllExport void add_sink_to_applogger(const char* sinkname, const char* channel, const char* format, int* err);
+   DllExport void add_sink_to_applogger(const char* sinkname, 
+      const char* channel, const char* format, const char* minseverity, int* err);
 
+   /**
+    * @brief Sends a message to the logger to be logged to the appropriate sink.
+    * 
+    * @param channel [in] The name of channel where the message is coming from. It can be NULL in which case the message will be written as if it was coming from all channels.
+    * @param severity [in] The severity of the message. Valid values are [Debug, Info, Warning, Error, Critical] (not case-sensitive). It can be NULL and it defaults to Info.
+    * @param message [in] The message to be logged.
+    * @param err [out] Returns 0 on success, -1 on error and 1 in case of success with messages.
+    */
+   DllExport void send_message_to_applogger(const char* channel, const char* severity, const char* message, int*err);
 
 #if __cplusplus
 }

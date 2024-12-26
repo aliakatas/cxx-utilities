@@ -38,13 +38,15 @@ public:
         Critical
     };
 
+    static Severity severityFromString(const std::string& str) noexcept(false);
+
     // Singleton instance getter
     static AppLogger& getInstance();
 
     // Initialize the AppLogger with default settings
     void init();
 
-    void addChannelSink_working_format(
+    void addChannelSinkWithFormat(
         const std::string& channel,
         const std::string& filename,
         const Severity minSeverity,
@@ -97,9 +99,10 @@ public:
         logToChannel(channel, Severity::Critical, message); 
     }
 
-private:
     AppLogger() = default;
     ~AppLogger() = default;
+private:
+    
     AppLogger(const AppLogger&) = delete;
     AppLogger& operator=(const AppLogger&) = delete;
 

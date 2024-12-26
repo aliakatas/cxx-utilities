@@ -18,6 +18,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <algorithm>
 
 namespace logging = boost::log;
 namespace sinks = boost::log::sinks;
@@ -25,6 +26,29 @@ namespace expr = boost::log::expressions;
 namespace attrs = boost::log::attributes;
 namespace keywords = boost::log::keywords;
 
+AppLogger::Severity AppLogger::severityFromString(const std::string& str) noexcept(false)
+{
+    std::string local_str{ str };
+    std::transform(local_str.begin(), local_str.end(), local_str.begin(), 
+        [](unsigned char c){ return std::tolower(c); });
+
+    if (local_str.compare("debug") == 0)
+        return Severity::Debug;
+
+    if (local_str.compare("info") == 0)
+        return Severity::Info;
+
+    if (local_str.compare("warning") == 0)
+        return Severity::Warning;
+
+    if (local_str.compare("error") == 0)
+        return Severity::Error;
+    
+    if (local_str.compare("critical") == 0)
+        return Severity::Critical;
+
+    throw std::runtime_error(std::string(__FUNCTION__) + std::string(": severity not recognised!"));
+}
 
 // Singleton instance getter
 AppLogger& AppLogger::getInstance() 
@@ -43,7 +67,7 @@ void AppLogger::init()
     initConsoleSink();
 }
 
-void AppLogger::addChannelSink_working_format(
+void AppLogger::addChannelSinkWithFormat(
     const std::string& channel,
     const std::string& filename,
     const AppLogger::Severity minSeverity,

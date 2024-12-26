@@ -2,6 +2,8 @@
 #include <iostream>
 #include <stdexcept>
 
+void manage_applogger_error_messages(int return_code);
+
 int main() 
 {
     try
@@ -9,15 +11,29 @@ int main()
       int buffer_size = 0;
       int err = 0;
       get_applogger_version(nullptr, &buffer_size, &err);
+      if (err != APPLOGGER_EXIT_SUCCESS)
+      {
+        std::cerr << "Error: something went wrong while getting the number of chars in applogger's version string" << std::endl;
+      }
 
       char* applogger_version = new char[buffer_size];
       get_applogger_version(applogger_version, &buffer_size, &err);
+      if (err != APPLOGGER_EXIT_SUCCESS)
+      {
+        std::cerr << "Error: something went wrong while getting the applogger's version string" << std::endl;
+      }
+      else
+        std::cout << applogger_version << std::endl;
 
-      std::cout << applogger_version << std::endl;
+      add_sink_to_applogger(nullptr, nullptr, nullptr, nullptr, &err);
+      manage_applogger_error_messages(err);
 
-      //   auto& logger = AppLogger::getInstance();
-      //   logger.init();
-        
+      initialise_applogger(&err);
+      manage_applogger_error_messages(err);
+
+      add_sink_to_applogger("sink-log.log", "glob", nullptr, "info", &err);
+      manage_applogger_error_messages(err);
+      
       //   // Add channel-specific sinks
       //   logger.addChannelSink(
       //       "Network",
@@ -59,3 +75,34 @@ int main()
     
     return EXIT_SUCCESS;
 }
+
+void manage_applogger_error_messages(int return_code)
+{
+  if (return_code == APPLOGGER_EXIT_SUCCESS)
+    return;
+
+  int err = 0;
+  char* message_buffer = nullptr;
+  int message_size = 0;
+  get_applogger_errors(message_buffer, &message_size, &err);
+  if (err != APPLOGGER_EXIT_SUCCESS)
+  {
+    std::cerr << "Error: something went wrong while getting the applogger's error messages" << std::endl;
+  }
+  else
+  {
+    message_buffer = new char[message_size];
+    get_applogger_errors(message_buffer, &message_size, &err);
+    if (err != APPLOGGER_EXIT_SUCCESS)
+    {
+      std::cerr << "Error: something went wrong while getting the applogger's error messages" << std::endl;
+    }
+    else
+      std::cout << message_buffer << std::endl;
+  }
+
+  if (message_buffer)
+    delete[] message_buffer;
+}
+
+
