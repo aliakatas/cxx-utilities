@@ -25,7 +25,7 @@ namespace expr = boost::log::expressions;
 namespace attrs = boost::log::attributes;
 namespace keywords = boost::log::keywords;
 
-class AppLoggerWithChannels 
+class AppLogger 
 {
 public:
     // Define severity levels
@@ -39,9 +39,9 @@ public:
     };
 
     // Singleton instance getter
-    static AppLoggerWithChannels& getInstance();
+    static AppLogger& getInstance();
 
-    // Initialize the AppLoggerWithChannels with default settings
+    // Initialize the AppLogger with default settings
     void init();
 
     void addChannelSink_working_format(
@@ -55,8 +55,7 @@ public:
     void addChannelSink(
         const std::string& channel,
         const std::string& filename,
-        const Severity minSeverity,
-        const std::string& format
+        const Severity minSeverity
     );
 
     // Log a message to a specific channel with specified severity
@@ -99,10 +98,10 @@ public:
     }
 
 private:
-    AppLoggerWithChannels() = default;
-    ~AppLoggerWithChannels() = default;
-    AppLoggerWithChannels(const AppLoggerWithChannels&) = delete;
-    AppLoggerWithChannels& operator=(const AppLoggerWithChannels&) = delete;
+    AppLogger() = default;
+    ~AppLogger() = default;
+    AppLogger(const AppLogger&) = delete;
+    AppLogger& operator=(const AppLogger&) = delete;
 
     // Store channel-specific sinks
     std::map<std::string, boost::shared_ptr<sinks::synchronous_sink<sinks::text_file_backend>>> channelSinks;
@@ -123,7 +122,7 @@ private:
 template<typename CharT, typename TraitsT>
 std::basic_ostream<CharT, TraitsT>& operator<<(
     std::basic_ostream<CharT, TraitsT>& strm,
-    AppLoggerWithChannels::Severity lvl)
+    AppLogger::Severity lvl)
 {
     static const char* const str[] = 
     {

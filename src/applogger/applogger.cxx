@@ -1,4 +1,4 @@
-#include "applogger/apploggerwithchannels.hxx"
+#include "applogger/applogger.hxx"
 
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
@@ -27,14 +27,14 @@ namespace keywords = boost::log::keywords;
 
 
 // Singleton instance getter
-AppLoggerWithChannels& AppLoggerWithChannels::getInstance() 
+AppLogger& AppLogger::getInstance() 
 {
-    static AppLoggerWithChannels instance;
+    static AppLogger instance;
     return instance;
 }
 
-// Initialize the AppLoggerWithChannels with default settings
-void AppLoggerWithChannels::init() 
+// Initialize the AppLogger with default settings
+void AppLogger::init() 
 {
     // Add common attributes
     logging::add_common_attributes();
@@ -43,10 +43,10 @@ void AppLoggerWithChannels::init()
     initConsoleSink();
 }
 
-void AppLoggerWithChannels::addChannelSink_working_format(
+void AppLogger::addChannelSink_working_format(
     const std::string& channel,
     const std::string& filename,
-    const AppLoggerWithChannels::Severity minSeverity,
+    const AppLogger::Severity minSeverity,
     const std::string& format
 ) {
     typedef sinks::synchronous_sink<sinks::text_file_backend> sink_t;
@@ -62,7 +62,7 @@ void AppLoggerWithChannels::addChannelSink_working_format(
     // Set filter for both channel and severity
     sink->set_filter(
         expr::attr<std::string>("Channel") == channel &&
-        expr::attr<AppLoggerWithChannels::Severity>("Severity") >= minSeverity
+        expr::attr<AppLogger::Severity>("Severity") >= minSeverity
     );
 
     // Parse the format string and create a formatter
@@ -79,11 +79,10 @@ void AppLoggerWithChannels::addChannelSink_working_format(
 }
 
 // Add a channel-specific sink with custom filter and format
-void AppLoggerWithChannels::addChannelSink(
+void AppLogger::addChannelSink(
     const std::string& channel,
     const std::string& filename,
-    const AppLoggerWithChannels::Severity minSeverity,
-    const std::string& format
+    const AppLogger::Severity minSeverity
 ) {
     typedef sinks::synchronous_sink<sinks::text_file_backend> sink_t;
     
@@ -98,7 +97,7 @@ void AppLoggerWithChannels::addChannelSink(
     // Set filter for both channel and severity
     sink->set_filter(
         expr::attr<std::string>("Channel") == channel &&
-        expr::attr<AppLoggerWithChannels::Severity>("Severity") >= minSeverity
+        expr::attr<AppLogger::Severity>("Severity") >= minSeverity
     );
 
     // Set the formatter
@@ -106,7 +105,7 @@ void AppLoggerWithChannels::addChannelSink(
         expr::stream
             << expr::format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y-%m-%d %H:%M:%S.%f")
             << " [" << expr::attr<std::string>("Channel") << "]"
-            << " [" << expr::attr<AppLoggerWithChannels::Severity>("Severity") << "] "
+            << " [" << expr::attr<AppLogger::Severity>("Severity") << "] "
             << expr::smessage
     );
 
@@ -118,7 +117,7 @@ void AppLoggerWithChannels::addChannelSink(
 }
 
 // Initialize console sink with custom format
-void AppLoggerWithChannels::initConsoleSink() 
+void AppLogger::initConsoleSink() 
 {
     typedef sinks::synchronous_sink<sinks::text_ostream_backend> console_sink_t;
     
@@ -133,25 +132,25 @@ void AppLoggerWithChannels::initConsoleSink()
     sink->set_formatter(
         expr::stream
             << "[" << expr::attr<std::string>("Channel") << "]"
-            << "[" << expr::attr<AppLoggerWithChannels::Severity>("Severity") << "] "
+            << "[" << expr::attr<AppLogger::Severity>("Severity") << "] "
             << expr::smessage
     );
 
     // Set minimum severity for console
     sink->set_filter(
-        expr::attr<AppLoggerWithChannels::Severity>("Severity") >= AppLoggerWithChannels::Severity::Info
+        expr::attr<AppLogger::Severity>("Severity") >= AppLogger::Severity::Info
     );
 
     logging::core::get()->add_sink(sink);
 }
 
 // Get or create a channel-specific logger
-logging::sources::severity_channel_logger<AppLoggerWithChannels::Severity, std::string>& AppLoggerWithChannels::getChannelLogger(
+logging::sources::severity_channel_logger<AppLogger::Severity, std::string>& AppLogger::getChannelLogger(
     const std::string& channel
 ) {
     auto it = channelLoggers.find(channel);
     if (it == channelLoggers.end()) {
-        auto logger = boost::make_shared<logging::sources::severity_channel_logger<AppLoggerWithChannels::Severity, std::string>>(
+        auto logger = boost::make_shared<logging::sources::severity_channel_logger<AppLogger::Severity, std::string>>(
             keywords::channel = channel
         );
         channelLoggers[channel] = logger;
@@ -160,51 +159,3 @@ logging::sources::severity_channel_logger<AppLoggerWithChannels::Severity, std::
     return *(it->second);
 }
 
-// // Example usage
-// int main() {
-//     try
-//     {
-//         auto& logger = AppLoggerWithChannels::getInstance();
-//         logger.init();
-        
-//         // Add channel-specific sinks
-//         logger.addChannelSink(
-//             "Network",
-//             "logs/network_%Y%m%d.log",
-//             AppLoggerWithChannels::Severity::Debug,
-//             "%TimeStamp% [%Channel%] [%Severity%] %Message%"
-//         );
-        
-//         logger.addChannelSink(
-//             "Database",
-//             "logs/db_%Y%m%d.log",
-//             AppLoggerWithChannels::Severity::Info,
-//             "%TimeStamp% [%Channel%] [%Severity%] %Message%"
-//         );
-        
-//         logger.addChannelSink(
-//             "Security",
-//             "logs/security_%Y%m%d.log",
-//             AppLoggerWithChannels::Severity::Warning,
-//             "%TimeStamp% [%Channel%] [%Severity%] %Message%"
-//         );
-        
-//         // Log to specific channels
-//         logger.info("Network", "Connection established");
-//         logger.error("Network", "Connection lost");
-        
-//         logger.debug("Database", "Executing query: SELECT * FROM users");
-//         logger.info("Database", "Query completed successfully");
-        
-//         logger.warning("Security", "Failed login attempt");
-//         logger.error("Security", "Possible intrusion detected");
-        
-//     } 
-//     catch (const std::exception& e) 
-//     {
-//         std::cerr << "Error: " << e.what() << std::endl;
-//         return 1;
-//     }
-    
-//     return 0;
-// }
