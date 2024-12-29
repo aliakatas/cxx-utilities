@@ -11,3 +11,4 @@ No novelties here, just functions and classes that can be re-used in multiple pr
 - [system information](./include/system_info_utilities/)
 - [time utilities](./include/time_utilities/)
 
+![Clone Stats](https://img.shields.io/endpoint?url=https://aliakatas.github.io/cxx-utilities/clone_stats.json)
