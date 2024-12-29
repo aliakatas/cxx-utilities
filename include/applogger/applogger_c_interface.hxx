@@ -63,7 +63,16 @@ extern "C" {
     * @param message [in] The message to be logged.
     * @param err [out] Returns 0 on success, -1 on error and 1 in case of success with messages.
     */
-   DllExport void send_message_to_applogger(const char* channel, const char* severity, const char* message, int*err);
+   DllExport void send_message_to_applogger(const char* channel, const char* severity, const char* message, int* err);
+
+   /**
+    * @brief Closes any open log files and destroys the internal objects.
+    * Any messages from the module are cleared and cannot be recovered.
+    * It is recommended to retrieve them before calling this function.
+    * 
+    * @param err [out] Returns 0 on success, -1 on error and 1 in case of success with messages.
+    */
+   DllExport void destroy_apploger(int* err);
 
 #if __cplusplus
 }

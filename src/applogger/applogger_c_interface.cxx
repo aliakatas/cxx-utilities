@@ -7,13 +7,13 @@
 #include <vector>
 #include <stdexcept>
 #include <memory>
-// #include <iostream>
+#include <set>
 
 namespace applogger
 {
    std::unique_ptr<AppLogger> applogger;
    std::vector<std::string> messages;
-   std::vector<std::string> channels;
+   std::set<std::string> channels;
 }
 
 void log_message_to_channel(const AppLogger::Severity& severityVal, const std::string& channel, const std::string& message)
@@ -73,6 +73,7 @@ extern "C" {
             memset(buffer, 0, *nchars * sizeof(char));
             strncpy(buffer, local_buffer, *nchars - 1);
             delete[] local_buffer;
+            applogger::messages.clear();
          }
          else 
          {  
@@ -180,7 +181,7 @@ extern "C" {
          else 
             applogger::applogger->addChannelSink(std::string(channel), std::string(sinkname), severity);
 
-         applogger::channels.push_back(channel);
+         applogger::channels.emplace(channel);
       }
       catch(const std::exception& e)
       {
@@ -214,9 +215,18 @@ extern "C" {
             *err = APPLOGGER_EXIT_WITH_MESSAGES;
          }
 
-         // TODO: convert channel memory to set so that we can run a quick validity check before proceeding!
          if (channel)
-            log_message_to_channel(severityVal, std::string(channel), std::string(message));
+         {
+            if (applogger::channels.find(std::string(channel)) != applogger::channels.end())
+               log_message_to_channel(severityVal, std::string(channel), std::string(message));
+            else 
+            {
+               *err = APPLOGGER_EXIT_WITH_MESSAGES;
+               applogger::messages.push_back("channel not regognised, logging to all available channels");
+               for (auto& c : applogger::channels)
+                  log_message_to_channel(severityVal, c, std::string(message));
+            }
+         }
          else
          {
             for (auto& c : applogger::channels)
@@ -229,6 +239,16 @@ extern "C" {
          *err = APPLOGGER_EXIT_ERROR;
          return;
       }
+   }
+
+   //====================================================================
+   DllExport void destroy_apploger(int* err)
+   {
+      *err = APPLOGGER_EXIT_SUCCESS;
+      applogger::messages.clear();
+      applogger::channels.clear();
+      // applogger::applogger should be destroyed since it's 
+      // a unique_ptr...
    }
 
 #if __cplusplus
