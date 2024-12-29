@@ -1,6 +1,8 @@
 # C++ Utilities
 ![Clone Stats](https://img.shields.io/endpoint?url=https://aliakatas.github.io/cxx-utilities/clone_stats.json)
+
 ------------
+
 Collection of utilities which can be used in C++ projects.
 No novelties here, just functions and classes that can be re-used in multiple projects.
 
