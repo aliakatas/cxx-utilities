@@ -31,9 +31,53 @@ int main()
       initialise_applogger(&err);
       manage_applogger_error_messages(err);
 
-      add_sink_to_applogger("sink-log.log", "glob", nullptr, "info", &err);
+      add_sink_to_applogger("glob-log.log", "glob", nullptr, "info", &err);
+      manage_applogger_error_messages(err);
+
+      add_sink_to_applogger("sink-log.log", "sink", nullptr, "error", &err);
+      manage_applogger_error_messages(err);
+
+      send_message_to_applogger(nullptr, "Info", "this is an info message for everyone!", &err);
+      manage_applogger_error_messages(err);
+
+      send_message_to_applogger("glob", "warning", "this is a warning message from glob", &err);
+      manage_applogger_error_messages(err);
+
+      send_message_to_applogger("glob", "error", "this is an error message from glob", &err);
+      manage_applogger_error_messages(err);
+
+      send_message_to_applogger("glob", "critical", "this is a critical message from glob", &err);
+      manage_applogger_error_messages(err);
+
+      send_message_to_applogger("sink", "warning", "this is a warning message from sink", &err);
+      manage_applogger_error_messages(err);
+
+      send_message_to_applogger("sink", "error", "this is an error message from sink", &err);
+      manage_applogger_error_messages(err);
+
+      send_message_to_applogger("sink", "critical", "this is a critical message from sink", &err);
       manage_applogger_error_messages(err);
       
+      send_message_to_applogger("foo", "critical", "this is a critical message from foo", &err);
+      manage_applogger_error_messages(err);
+
+      add_sink_to_applogger("custom-log.log", "bespoke", 
+        "[%TimeStamp%][%Severity%] %Message%", "warning", &err);
+      manage_applogger_error_messages(err);
+
+      send_message_to_applogger(nullptr, "Info", "this is an info message for everyone #2!", &err);
+      manage_applogger_error_messages(err);
+
+      send_message_to_applogger("bespoke", "error", "this is an error message from bespoke!", &err);
+      manage_applogger_error_messages(err);
+
+      send_message_to_applogger("bespoke", "info", "this is an info message from bespoke!", &err);
+      manage_applogger_error_messages(err);
+
+      send_message_to_applogger("bespoke", "critical", "this is a critical message from bespoke!", &err);
+      manage_applogger_error_messages(err);
+
+
       //   // Add channel-specific sinks
       //   logger.addChannelSink(
       //       "Network",
