@@ -13,7 +13,7 @@ jobs:
 
       - name: Run Python Script
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: python parse_clones_count.py
       
       - name: Commit and Push Badge Data
