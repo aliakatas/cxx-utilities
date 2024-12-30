@@ -2,10 +2,10 @@ import requests
 import os
 import json
 
-# Replace with your credentials
 GITHUB_TOKEN = os.getenv("GH_TOKEN")
+print(GITHUB_TOKEN)
 if not GITHUB_TOKEN:
-    raise ValueError("GitHub token not found. Please set the GITHUB_TOKEN environment variable.")
+    raise ValueError("GitHub token not found. Please set the GH_TOKEN environment variable.")
 
 OWNER = "aliakatas"
 REPO = "cxx-utilities"
