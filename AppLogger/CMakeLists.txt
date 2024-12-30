@@ -17,26 +17,26 @@ set(VERSION_PATCH 0)
 # Get the current git hash
 execute_process(
     COMMAND git rev-parse --short HEAD
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     OUTPUT_VARIABLE GIT_HASH
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
 # Calculate days since 01-01-2020 using the Python script
 execute_process(
-    COMMAND python3 ${CMAKE_SOURCE_DIR}/../include/build_utilities/calculate_days.py
+    COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/../include/build_utilities/calculate_days.py
     OUTPUT_VARIABLE DAYS_SINCE_2020
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
 # Configure the version header file
 configure_file(
-    ${CMAKE_SOURCE_DIR}/../include/build_utilities/version_info.hpp.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/../include/build_utilities/version_info.hpp.in
     ${CMAKE_BINARY_DIR}/include/version_info.hpp
 )
 # Configure the module name header file
 configure_file(
-    ${CMAKE_SOURCE_DIR}/../include/build_utilities/module_name.hpp.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/../include/build_utilities/module_name.hpp.in
     ${CMAKE_BINARY_DIR}/include/module_name.hpp
 )
 
@@ -55,12 +55,12 @@ endif()
 
 # Get the source code files
 file(GLOB SOURCE_FILES
-    "${CMAKE_SOURCE_DIR}/../src/applogger/*.cxx"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../src/applogger/*.cxx"
 )
 
 # Get the header files
 file(GLOB HEADER_FILES
-    "${CMAKE_SOURCE_DIR}/../include/applogger/*.hxx"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../include/applogger/*.hxx"
 )
 
 # Create the executable
@@ -82,8 +82,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 target_include_directories(${PROJECT_NAME} PUBLIC 
     "${CMAKE_CURRENT_SOURCE_DIR}/../include" 
     "${CMAKE_BINARY_DIR}/include"
-    "${CMAKE_SOURCE_DIR}/../include/applogger"
-    "${CMAKE_SOURCE_DIR}/../include"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../include/applogger"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../include"
     ${Boost_INCLUDE_DIRS}
 )
 
