@@ -33,8 +33,11 @@ public:
 
     /**
      * @brief Loads the dynamic library in memory.
+     * 
+     * For Linux, the LD_LIBRARY_PATH environment variable
+     * needs to be set/updated with the location of the library.
      *
-     * @param libname [in] The name of the library to load. For linux, "lib" is prepended to the name.
+     * @param libname [in] The name of the library to load. For Linux, "lib" is prepended to the name and ".so" appended. For Windows, ".dll" is appended.
      * @param load_options [in] Ignored for Windows. See https://man7.org/linux/man-pages/man3/dlopen.3.html for Linux.
      *
      * @throws Runtime error if the load fails.
@@ -43,7 +46,9 @@ public:
     {
       std::string local_libname{ libname };
 #if defined(__linux__)
-      local_libname = std::string("lib") + local_libname;
+      local_libname = std::string("lib") + local_libname + std::string(".so");
+#else 
+      local_libname = local_libname + std::string(".dll");
 #endif
       p_lib_handle = Dlopen(local_libname.c_str(), load_options);
       if (p_lib_handle == nullptr)
@@ -73,7 +78,7 @@ public:
     /**
      * @brief Releases the handle to the library.
     */
-    ~DynLibLoader() noexcept
+    ~LibLoader() noexcept
     {
         Dlclose(p_lib_handle);
     }
