@@ -242,7 +242,7 @@ extern "C" {
    }
 
    //====================================================================
-   DllExport void destroy_apploger(int* err)
+   DllExport void destroy_applogger(int* err)
    {
       *err = APPLOGGER_EXIT_SUCCESS;
       applogger::messages.clear();

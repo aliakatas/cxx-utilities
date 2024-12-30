@@ -72,7 +72,7 @@ extern "C" {
     * 
     * @param err [out] Returns 0 on success, -1 on error and 1 in case of success with messages.
     */
-   DllExport void destroy_apploger(int* err);
+   DllExport void destroy_applogger(int* err);
 
 #if __cplusplus
 }
