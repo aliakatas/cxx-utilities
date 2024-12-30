@@ -15,7 +15,7 @@ jobs:
       - name: Run Python Script
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: echo ${{ GH_TOKEN }} #python parse_clones_count.py
+        run: echo ${{ env.GH_TOKEN }} #python parse_clones_count.py
       
       - name: Commit and Push Badge Data
         run: |
