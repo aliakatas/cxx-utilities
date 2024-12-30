@@ -35,7 +35,7 @@ public:
      * @brief Loads the dynamic library in memory.
      *
      * @param libname [in] The name of the library to load. For linux, "lib" is prepended to the name.
-     * @param load_options [in] Ignored for Windows.
+     * @param load_options [in] Ignored for Windows. See https://man7.org/linux/man-pages/man3/dlopen.3.html for Linux.
      *
      * @throws Runtime error if the load fails.
     */
@@ -62,7 +62,7 @@ public:
      * @brief Loads the dynamic library in memory.
      *
      * @param libname [in] The name of the library to load. For linux, "lib" is prepended to the name.
-     * @param load_options [in] Ignored for Windows.
+     * @param load_options [in] Ignored for Windows. See https://man7.org/linux/man-pages/man3/dlopen.3.html for Linux.
      *
      * @throws Runtime error if the load fails.
     */
