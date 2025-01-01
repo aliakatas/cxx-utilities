@@ -81,16 +81,17 @@ namespace timeutils
      * @brief Returns the current date & time in a "%Y-%m-%d %H:%M:%S" format.
      * 
      * @param use_gmt [in] Flag to indicate use of GMT time instead of local time (default).
+     * @param fmt [in] The format to use for datetime string. Defaults to "%Y-%m-%d %H:%M:%S". Help with the format https://en.cppreference.com/w/cpp/io/manip/put_time.
      * @return std::string
      */
-    inline std::string get_current_datetime_str(bool use_gmt = false)
+    inline std::string get_current_datetime_str(bool use_gmt = false, const char* fmt = "%Y-%m-%d %H:%M:%S")
     {
         auto now = std::time(nullptr);
         char mbstr[100];
         if (use_gmt)
-            std::strftime(mbstr, sizeof(mbstr), "%Y-%m-%d %H:%M:%S", std::gmtime(&now));
+            std::strftime(mbstr, sizeof(mbstr), fmt, std::gmtime(&now));
         else 
-            std::strftime(mbstr, sizeof(mbstr), "%Y-%m-%d %H:%M:%S", std::localtime(&now));
+            std::strftime(mbstr, sizeof(mbstr), fmt, std::localtime(&now));
         return std::string(mbstr);
     }
 
