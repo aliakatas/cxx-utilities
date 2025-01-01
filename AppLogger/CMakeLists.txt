@@ -32,12 +32,12 @@ execute_process(
 # Configure the version header file
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/build_utilities/version_info.hpp.in
-    ${CMAKE_BINARY_DIR}/include/version_info.hpp
+    ${CMAKE_BINARY_DIR}/${PROJECT_NAME}_inc/version_info.hpp
 )
 # Configure the module name header file
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/../include/build_utilities/module_name.hpp.in
-    ${CMAKE_BINARY_DIR}/include/module_name.hpp
+    ${CMAKE_BINARY_DIR}/${PROJECT_NAME}_inc/module_name.hpp
 )
 
 # Specify the C++ standard
@@ -81,7 +81,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 # Add the include directory to the application's target
 target_include_directories(${PROJECT_NAME} PUBLIC 
     "${CMAKE_CURRENT_SOURCE_DIR}/../include" 
-    "${CMAKE_BINARY_DIR}/include"
+    "${CMAKE_BINARY_DIR}/${PROJECT_NAME}_inc"
     "${CMAKE_CURRENT_SOURCE_DIR}/../include/applogger"
     "${CMAKE_CURRENT_SOURCE_DIR}/../include"
     ${Boost_INCLUDE_DIRS}
