@@ -97,7 +97,8 @@ extern "C" {
       {
          std::string version = build_info::get_app_name() + std::string("\n");
          version += build_info::get_version() + std::string("\n");
-         version += build_info::get_build_date_time();
+         version += build_info::get_build_date_time() + std::string(" with ");
+         version += build_info::get_compiler_info();
 
          size_t msize = version.length();
 
@@ -114,7 +115,7 @@ extern "C" {
             strcpy(local_buffer, version.c_str());
 
             memset(buffer, 0, *nchars * sizeof(char));
-            strncpy(buffer, local_buffer, *nchars - 1);
+            strncpy(buffer, local_buffer, *nchars);
             delete[] local_buffer;
          }
          else 
