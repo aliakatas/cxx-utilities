@@ -1,0 +1,63 @@
+# Recipe to build a Dev image for gcc and gfortran with Boost 1.87.0 (custom-built)
+# Build with:
+#    docker build -t aristos86/dev-fedora38-boost1870:latest -f Dockerfile.fedora.38 .
+# Run with:
+#    docker run -it --rm -v $(pwd):/app aristos86/dev-fedora38-boost1870 /bin/bash
+
+# Stage 1: Build Boost
+# Use a lightweight Fedora image as the base
+FROM fedora:38 AS build
+
+# Install essential tools for building Boost
+# Update the package lists
+RUN dnf update -y
+
+# Install essential development tools
+RUN dnf install -y \
+    gcc-c++ \
+    cmake \
+    make \
+    git \
+    wget \
+    tar \
+    && dnf autoremove -y
+
+# Define Boost version
+ENV BOOST_VERSION=1.87.0
+ENV BOOST_DIR=boost_1_87_0
+
+# Download and build Boost
+RUN wget https://archives.boost.io/release/${BOOST_VERSION}/source/${BOOST_DIR}.tar.gz \
+    && tar -xzf ${BOOST_DIR}.tar.gz \
+    && cd ${BOOST_DIR} \
+    && ./bootstrap.sh \
+    && ./b2 install --prefix=/opt/boost --without-python cxxstd=17 link=shared runtime-link=shared
+
+# Stage 2: Final Image
+FROM fedora:38
+
+# Install runtime dependencies
+RUN dnf update -y
+RUN dnf install -y \
+    gcc-c++ \
+    gcc-gfortran \
+    cmake \
+    make \
+    git \
+    vim \
+    && dnf autoremove -y \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf
+
+# Copy Boost from the build stage
+COPY --from=build /opt/boost /opt/boost
+
+# Add Boost to environment variables
+ENV BOOST_ROOT=/opt/boost
+ENV LD_LIBRARY_PATH=/opt/boost/lib
+ENV PATH=/opt/boost/bin:$PATH
+
+# Add a non-root user for development
+RUN useradd -ms /bin/bash devuser
+USER devuser
+WORKDIR /home/devuser
