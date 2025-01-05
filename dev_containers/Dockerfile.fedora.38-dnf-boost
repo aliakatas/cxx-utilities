@@ -1,0 +1,27 @@
+# Recipe to build a Dev image for gcc and gfortran with Boost 1.87.0 (custom-built)
+# Build with:
+#    docker build -t aristos86/dev-fedora38-dnf-boost:latest -f Dockerfile.fedora.38-dnf-boost .
+# Run with:
+#    docker run -it --rm -v $(pwd):/app aristos86/dev-fedora38-dnf-boost /bin/bash
+
+# Use a lightweight Fedora image as the base
+FROM fedora:38
+
+# Install runtime dependencies
+RUN dnf update -y
+RUN dnf install -y \
+    gcc-c++ \
+    gcc-gfortran \
+    cmake \
+    make \
+    git \
+    vim \
+    boost-devel \
+    && dnf autoremove -y \
+    && dnf clean all \
+    && rm -rf /var/cache/dnf
+
+# Add a non-root user for development
+RUN useradd -ms /bin/bash devuser
+USER devuser
+WORKDIR /home/devuser

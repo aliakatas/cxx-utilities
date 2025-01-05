@@ -1,0 +1,24 @@
+# Recipe to build a Dev image for gcc and gfortran and Boost from APT repos
+# Build with:
+#    docker build -t aristos86/dev-ubuntu2204-apt-boost:latest -f Dockerfile.ubuntu.22.04-apt-boost .
+# Run with:
+#    docker run -it --rm -v $(pwd):/app aristos86/dev-ubuntu2204-apt-boost /bin/bash
+
+FROM ubuntu:22.04
+
+# Install essential tools for building Boost
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
+    gfortran \
+    libboost-all-dev \
+    cmake \
+    git \
+    vim \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Add a non-root user for development
+RUN useradd -ms /bin/bash devuser
+USER devuser
+WORKDIR /home/devuser
